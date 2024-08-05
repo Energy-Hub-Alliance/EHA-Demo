@@ -1,0 +1,62 @@
+version: "3.8"
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.1
+    container_name: keycloak-demo
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HEALTH_ENABLED=true
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/keycloak:/opt/keycloak/data/import
+    command: start-dev --import-realm
+    healthcheck:
+      test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)new java.net.URL(args[0]).openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:8080/health/live']
+      interval: 5s
+      retries: 30
+      start_period: 20s
+      timeout: 5s
+
+  demo-be:
+    container_name: eha-backend
+    build:
+      context: demo-be
+      dockerfile: Dockerfile
+    network_mode: "host"
+    environment:
+      - KAFKA_CLIENT_ID=
+      - KAFKA_CLIENT_SECRET=
+      - KAFKA_URL=
+      - KAFKA_KEYCLOAK_TOKEN_URL=
+      - KAFKA_TRUST_STORE_FILE_PATH=
+      - KAFKA_TRUST_STORE_PASSWORD=
+      - GATEWAY_BASE_URL=
+      - DEMO_APP_API_KEY=
+      - DEMO_APP_SUBSCRIPTION_ID=
+      - KEYCLOAK_URL=
+    volumes:
+      - ./demo-be/src/main/resources/kafka.truststore.jks:/cert/kafka.truststore.jks
+    healthcheck:
+      test: [ 'CMD', 'wget', '--spider', 'http://localhost:8090/actuator/health' ]
+      interval: 10s
+      retries: 20
+      start_period: 20s
+      timeout: 5s
+    depends_on:
+      keycloak:
+        condition: service_healthy
+
+  demo-fe:
+    container_name: eha-frontend
+    build:
+      context: demo-fe
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      demo-be:
+        condition: service_healthy

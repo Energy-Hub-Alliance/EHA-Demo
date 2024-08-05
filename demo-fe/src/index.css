@@ -1,0 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  font-family: 'Exo', 'Roboto', 'Arial', 'sans-serif';
+
+  /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #00ff7f transparent;
+}
+
+/* Webkit scrollbar */
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #00ff7f;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  font-size: 10px;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style-type: none;
+}
+
+button:focus,
+textarea:focus,
+input:focus {
+  outline: none;
+}
