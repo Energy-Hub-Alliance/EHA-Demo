@@ -29,5 +29,6 @@ public class VendorResponse {
 
     @NotNull
     @Schema(description = "The URL to the vendor logo.", example = "https://energy-hub.io/api/vendors/v1/tesla/logo")
-    private String logoUrl;
+    private LogoUrlDto logoUrl;
+
 }

@@ -14,6 +14,27 @@ import {
 } from './tariffExternalDto';
 import { TariffExternalPageModel } from './tariffExternalModel';
 import { tariffExternalNormalizer } from './tariffExternalNormalizer';
+import { HvacExternalDto, HvacExternalPageEntry } from './hvacExternalDto';
+import { HvacExternalPageModel } from './hvacExternalModel';
+import { hvacExternalNormalizer } from './hvacExternalNormalizer';
+import { SelectHvacsFormData } from '../../core/components/pages/linkHvacs/SelectHvacsForm';
+import {
+  HomePowerExternalDto,
+  HomePowerExternalPageEntry,
+} from './homePowerExternalDto';
+import { HomePowerExternalPageModel } from './homePowerExternalModel';
+import { homePowerExternalNormalizer } from './homePowerExternalNormalizer';
+import {
+  ChargingHardwareExternalDto,
+  ChargingHardwareExternalPageEntry,
+} from './chargingHardwareExternalDto';
+import { ChargingHardwareExternalPageModel } from './chargingHardwareExternalModel';
+import { chargingHardwareExternalNormalizer } from './chargingHardwareNormalizer';
+
+interface SelectChargersFormData {
+  vendor: string;
+  externalChargers: string[];
+}
 
 export const linkApi = createApi({
   reducerPath: 'linkApi',
@@ -73,6 +94,157 @@ export const linkApi = createApi({
         };
       },
     }),
+
+    linkHvac: builder.mutation<
+      HvacExternalDto[],
+      { vendorAccountId: string; body: SelectHvacsFormData }
+    >({
+      query: ({ vendorAccountId, body }) => ({
+        url: `/vendor-accounts/${vendorAccountId}/hvacs`,
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    getVendorAccountHvacs: builder.query<HvacExternalPageModel, string>({
+      query: (vendorAccountId) => ({
+        url: `/vendor-accounts/${vendorAccountId}/hvacs`,
+      }),
+      transformResponse: (vendorAccountResponse: HvacExternalPageEntry) => {
+        return {
+          totalElements: vendorAccountResponse.totalElements,
+          totalPages: vendorAccountResponse.totalPages,
+          hvacs: vendorAccountResponse.content.map((hvac: HvacExternalDto) =>
+            hvacExternalNormalizer(hvac)
+          ),
+        };
+      },
+    }),
+
+    linkMeter: builder.mutation<
+      HomePowerExternalDto[],
+      { vendorAccountId: string; externalMeters: string[] }
+    >({
+      query: ({ vendorAccountId, externalMeters }) => ({
+        url: `/vendor-accounts/${vendorAccountId}/meters`,
+        method: 'POST',
+        body: {
+          externalMeters,
+        },
+      }),
+    }),
+
+    getVendorAccountMeter: builder.query<HomePowerExternalPageModel, string>({
+      query: (vendorAccountId) => ({
+        url: `/vendor-accounts/${vendorAccountId}/meters`,
+      }),
+      transformResponse: (
+        vendorAccountResponse: HomePowerExternalPageEntry
+      ) => {
+        return {
+          totalElements: vendorAccountResponse.totalElements,
+          totalPages: vendorAccountResponse.totalPages,
+          homePower: vendorAccountResponse.content.map(
+            (homePower: HomePowerExternalDto) =>
+              homePowerExternalNormalizer(homePower)
+          ),
+        };
+      },
+    }),
+
+    linkBattery: builder.mutation<
+      HomePowerExternalDto[],
+      { vendorAccountId: string; externalBatteries: string[] }
+    >({
+      query: ({ vendorAccountId, externalBatteries }) => ({
+        url: `/vendor-accounts/${vendorAccountId}/batteries`,
+        method: 'POST',
+        body: {
+          externalBatteries,
+        },
+      }),
+    }),
+
+    getVendorAccountBattery: builder.query<HomePowerExternalPageModel, string>({
+      query: (vendorAccountId) => ({
+        url: `/vendor-accounts/${vendorAccountId}/batteries`,
+      }),
+      transformResponse: (
+        vendorAccountResponse: HomePowerExternalPageEntry
+      ) => {
+        return {
+          totalElements: vendorAccountResponse.totalElements,
+          totalPages: vendorAccountResponse.totalPages,
+          homePower: vendorAccountResponse.content.map(
+            (homePower: HomePowerExternalDto) =>
+              homePowerExternalNormalizer(homePower)
+          ),
+        };
+      },
+    }),
+
+    linkInverter: builder.mutation<
+      HomePowerExternalDto[],
+      { vendorAccountId: string; externalPvInverters: string[] }
+    >({
+      query: ({ vendorAccountId, externalPvInverters }) => ({
+        url: `/vendor-accounts/${vendorAccountId}/pv-inverters`,
+        method: 'POST',
+        body: { externalPvInverters },
+      }),
+    }),
+
+    getVendorAccountInverter: builder.query<HomePowerExternalPageModel, string>(
+      {
+        query: (vendorAccountId) => ({
+          url: `/vendor-accounts/${vendorAccountId}/pv-inverters`,
+        }),
+        transformResponse: (
+          vendorAccountResponse: HomePowerExternalPageEntry
+        ) => {
+          return {
+            totalElements: vendorAccountResponse.totalElements,
+            totalPages: vendorAccountResponse.totalPages,
+            homePower: vendorAccountResponse.content.map(
+              (homePower: HomePowerExternalDto) =>
+                homePowerExternalNormalizer(homePower)
+            ),
+          };
+        },
+      }
+    ),
+
+    linkCharger: builder.mutation<
+      ChargingHardwareExternalDto[],
+      { vendorAccountId: string; body: SelectChargersFormData }
+    >({
+      query: ({ vendorAccountId, body }) => ({
+        url: `/vendor-accounts/${vendorAccountId}/chargers`,
+        method: 'POST',
+        body,
+      }),
+    }),
+
+    getVendorAccountCharger: builder.query<
+      ChargingHardwareExternalPageModel,
+      string
+    >({
+      query: (vendorAccountId) => ({
+        url: `/vendor-accounts/${vendorAccountId}/chargers`,
+      }),
+      transformResponse: (
+        vendorAccountResponse: ChargingHardwareExternalPageEntry
+      ) => {
+        return {
+          totalElements: vendorAccountResponse.totalElements,
+          totalPages: vendorAccountResponse.totalPages,
+          content: vendorAccountResponse.content.map(
+            (charger: ChargingHardwareExternalDto) =>
+              chargingHardwareExternalNormalizer(charger)
+          ),
+        };
+      },
+    }),
   }),
 });
 
@@ -81,4 +253,14 @@ export const {
   useGetVendorAccountVehiclesQuery,
   useLinkTariffMutation,
   useGetVendorAccountTariffsQuery,
+  useLinkHvacMutation,
+  useGetVendorAccountHvacsQuery,
+  useGetVendorAccountBatteryQuery,
+  useGetVendorAccountInverterQuery,
+  useGetVendorAccountMeterQuery,
+  useGetVendorAccountChargerQuery,
+  useLinkChargerMutation,
+  useLinkBatteryMutation,
+  useLinkInverterMutation,
+  useLinkMeterMutation,
 } = linkApi;

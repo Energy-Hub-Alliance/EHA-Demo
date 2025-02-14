@@ -4,6 +4,9 @@ import * as createPalette from '@mui/material/styles/createPalette';
 declare module '@mui/material/styles/createPalette' {
   interface CustomCommonColors extends CommonColors {
     statuses: {
+      PRODUCING: string;
+      DISCHARGING: string;
+      IDLE: string;
       CHARGING: string;
       FAULT: string;
       FINISHED: string;

@@ -1,7 +1,6 @@
 package io.energyhub.demoapi.eha.model.hvac;
 
 import io.energyhub.demoapi.eha.model.UserLinkRequest;
-import io.energyhub.demoapi.eha.model.constant.Vendor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
-@Schema(description = "An object containing relevant information for linking to vendor account for HVAC vendor.")
+@Schema(description = "An object containing relevant information to link HVAC vendor accounts.")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -18,6 +17,6 @@ import lombok.NoArgsConstructor;
 public class HvacUserLinkRequest extends UserLinkRequest {
 
     @NotNull
-    @Schema(description = "An API which we are connecting the user to", type = "string", allowableValues = "VIESSMANN")
-    private Vendor vendor;
+    @Schema(description = "The vendor of the account to be added to the Energy Hub.", example = "VIESSMANN")
+    private String vendor;
 }

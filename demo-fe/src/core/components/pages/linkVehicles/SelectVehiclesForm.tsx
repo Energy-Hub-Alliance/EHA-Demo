@@ -1,7 +1,6 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import { FooterWrapper } from '../../shared/wrappers/FooterWrapper';
 import { useTranslation } from 'react-i18next';
-import { Manufacturer } from '../../shared/mappers/vehicleManufacturersToIcons';
 import { SelectableVehicleCard } from './SelectableVehicleCard';
 import {
   Controller,
@@ -102,7 +101,7 @@ export const SelectVehiclesForm = ({
                 return (
                   <SelectableVehicleCard
                     vehicleId={vehicle.externalVehicleId}
-                    manufacturer={vehicle.manufacturer as Manufacturer}
+                    manufacturer={vehicle.manufacturer}
                     model={vehicle.vehicleName}
                     selected={
                       value.includes(vehicle.externalVehicleId) ||
@@ -121,6 +120,7 @@ export const SelectVehiclesForm = ({
                         onChange([...value, vehicleId]);
                       }
                     }}
+                    vin={vehicle.vin}
                   />
                 );
               }}
@@ -130,26 +130,15 @@ export const SelectVehiclesForm = ({
         </Box>
 
         <FooterWrapper>
-          <Box
-            sx={{
-              height: '100%',
-              width: '100%',
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'center',
-              px: 10,
-            }}
+          <LoadingButton
+            variant="contained"
+            fullWidth
+            disabled={!isDirty || !isValid}
+            loading={isLinking}
+            type="submit"
           >
-            <LoadingButton
-              variant="contained"
-              fullWidth
-              disabled={!isDirty || !isValid}
-              loading={isLinking}
-              type="submit"
-            >
-              {t('connectVehicles')}
-            </LoadingButton>
-          </Box>
+            {t('connectVehicles')}
+          </LoadingButton>
         </FooterWrapper>
       </form>
     </FormProvider>

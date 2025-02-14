@@ -19,7 +19,7 @@ public class UserLinkRequest {
 
     @NotBlank
     @Size(max = 2048)
-    @Schema(description = "The URL to which user will be redirected.",
+    @Schema(description = "The URL to which the user will be redirected.",
             example = "https://www.redirectable-website.com/v1/endpoint/bea09c5f-9d37-4562-b54a-dedb48d7aaf4")
     private String redirectUrl;
 }

@@ -1,7 +1,6 @@
 package io.energyhub.demoapi.eha.model.tariff;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.energyhub.demoapi.eha.model.constant.Vendor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,23 +23,28 @@ public class TariffLinkDto {
     private UUID uuid;
 
     @NotNull
-    @Schema(description = "The external ID of the tariff.", example = "8413731391660801")
+    @Schema(description = "The ID of the tariff in external vendor system.", example = "8413731391660801")
+    @JsonProperty(index = 2)
     private String externalId;
 
     @NotNull
-    @Schema(description = "Indicates if the tariff is linked with the Energy Hub Alliance.")
+    @Schema(description = "Indicates if the tariff is linked to the Energy Hub.")
+    @JsonProperty(index = 3)
     private Boolean isLinked;
 
     @NotNull
-    @Schema(description = "The vendor of the tariff.", example = "TIBBER")
-    private Vendor vendor;
+    @Schema(description = "The vendor of the tariff.", example = "OSTROM")
+    @JsonProperty(index = 4)
+    private String vendor;
 
     @NotNull
     @Schema(description = "The country code of the tariff.", example = "DE")
+    @JsonProperty(index = 6)
     private String countryCode;
 
     @NotNull
     @Schema(description = "The name of the tariff.", example = "Tibber Bürgerfelder Str.")
-    private String tariffName;
+    @JsonProperty(index = 5)
+    private String name;
 
 }

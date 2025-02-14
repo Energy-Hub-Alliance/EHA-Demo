@@ -5,11 +5,12 @@ import io.energyhub.demoapi.constant.ConsumptionPeriod;
 import io.energyhub.demoapi.eha.client.EhaSmartEnergyApiClient;
 import io.energyhub.demoapi.eha.model.SuccessMessageDto;
 import io.energyhub.demoapi.eha.model.pagination.PageResponse;
-import io.energyhub.demoapi.eha.model.sort.TariffSortRequest;
+import io.energyhub.demoapi.eha.model.sort.DeviceForUserSortRequest;
 import io.energyhub.demoapi.eha.model.tariff.PriceResponse;
 import io.energyhub.demoapi.eha.model.tariff.TariffResponse;
-import io.energyhub.demoapi.model.ConsumptionPeriodResponse;
-import io.energyhub.demoapi.model.ConsumptionStatsResponse;
+import io.energyhub.demoapi.eha.model.tariff.TariffShortResponse;
+import io.energyhub.demoapi.eha.model.tariff.ConsumptionPeriodResponse;
+import io.energyhub.demoapi.eha.model.tariff.ConsumptionStatsResponse;
 import io.energyhub.demoapi.service.TariffConsumptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,8 +35,8 @@ public class TariffController {
 
     @Operation(summary = "All tariffs for user", description = "Returns a paginated list of all tariffs that belong to the user.")
     @GetMapping
-    public PageResponse<TariffResponse> getAllTariffsByUserId(
-            @ParameterObject @Valid TariffSortRequest request
+    public PageResponse<TariffShortResponse> getAllTariffsByUserId(
+            @ParameterObject @Valid DeviceForUserSortRequest request
     ) {
         return ehaSmartEnergyApiClient.getAllTariffsByUserId(currentUser.getCurrentUser().getUserId(), request);
     }

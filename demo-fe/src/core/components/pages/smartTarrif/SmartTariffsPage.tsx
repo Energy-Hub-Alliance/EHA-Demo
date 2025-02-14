@@ -45,6 +45,7 @@ export const SmartTariffsPage = () => {
               key={tariff.tariffId}
               smartTariffId={tariff.tariffId}
               smartTariffVendor={tariff.vendor}
+              smartTariffName={tariff.tariffName}
             />
           ))}
         </Box>
@@ -63,24 +64,13 @@ export const SmartTariffsPage = () => {
       )}
 
       <FooterWrapper>
-        <Box
-          sx={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            px: 10,
-          }}
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={() => navigate('connect')}
         >
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={() => navigate('connect')}
-          >
-            {t('connectSmartTariff')}
-          </Button>
-        </Box>
+          {t('connectSmartTariff')}
+        </Button>
       </FooterWrapper>
     </>
   );

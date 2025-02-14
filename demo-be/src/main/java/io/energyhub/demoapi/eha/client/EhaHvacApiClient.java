@@ -8,7 +8,7 @@ import io.energyhub.demoapi.eha.model.hvac.HvacResponse;
 import io.energyhub.demoapi.eha.model.hvac.HvacShortResponse;
 import io.energyhub.demoapi.eha.model.hvac.HvacsAddingRequest;
 import io.energyhub.demoapi.eha.model.pagination.PageResponse;
-import io.energyhub.demoapi.eha.model.sort.HvacSortRequest;
+import io.energyhub.demoapi.eha.model.sort.DeviceForUserSortRequest;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -24,7 +24,7 @@ public interface EhaHvacApiClient {
 
     @GetMapping("v1.0.0/users/{userId}/hvacs")
     PageResponse<HvacShortResponse> getAllHvacs(@PathVariable String userId,
-                                                @SpringQueryMap HvacSortRequest request);
+                                                @SpringQueryMap DeviceForUserSortRequest request);
 
     @GetMapping("v1.0.0/users/{userId}/hvacs/{hvacId}")
     HvacResponse getHvacByHvacUuid(@PathVariable String userId,
@@ -52,14 +52,14 @@ public interface EhaHvacApiClient {
             @PathVariable(name = "hvacId") UUID hvacUuid
     );
 
-    @PostMapping("v1.0.0/link/users/{userId}/vendor-accounts/{vendorAccountId}/hvac")
+    @PostMapping("v1.0.0/link/users/{userId}/vendor-accounts/{vendorAccountId}/hvacs")
     List<HvacLinkDto> linkHvacsFromEndUsersVendorAccount(
             @Parameter(description = "User ID") @PathVariable String userId,
             @PathVariable(name = "vendorAccountId") UUID vendorAccountUuid,
             @RequestBody @Valid HvacsAddingRequest hvacsAddingRequest
     );
 
-    @GetMapping("v1.0.0/link/users/{userId}/vendor-accounts/{vendorAccountId}/hvac")
+    @GetMapping("v1.0.0/link/users/{userId}/vendor-accounts/{vendorAccountId}/hvacs")
     PageResponse<HvacLinkDto> getConnectedHvacsFromVendorForVendorAccount(
             @Parameter(description = "User ID") @PathVariable String userId,
             @PathVariable(name = "vendorAccountId") UUID vendorAccountUuid,

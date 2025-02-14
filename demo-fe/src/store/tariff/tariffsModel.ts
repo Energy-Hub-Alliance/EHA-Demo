@@ -1,15 +1,13 @@
 export interface TariffModel {
   tariffId: string;
   userId: string;
-  locationId: string;
-  currency: string;
-  country: string;
+  tariffName: string;
   last_updated: string;
   isOnline: boolean;
   vendor: string;
 }
 
-export interface TariffPageModel {
+export interface TariffsPageModel {
   tariffs: TariffModel[];
   totalElements: number;
   totalPages: number;

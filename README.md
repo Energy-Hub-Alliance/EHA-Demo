@@ -3,6 +3,8 @@
 </p>
 
 # EHA Demo App
+If you ever wanted to check how your integration with [Energy Hub Alliance](https://www.energy-hub.io) software solution might look and feel this is the right place.
+This is true example of partner integration providing all features at glance.
 
 ## Why use the EHA-Demo App?
 
@@ -10,6 +12,11 @@
 * Get inspired for front-end screens
 * Use as a basis to build your first energy app
 * Test your EHA connection
+
+## Community
+* In order to be contact us go [HERE](https://www.energy-hub.io/contact-us/)
+* Find more documentation on [Developer portal](https://developer.energy-hub.io/documentation/introduction)
+* ![Linkedin](https://de.linkedin.com/company/energy-hub-alliance) follow and interact with us
 
 ## Project Overview
 
@@ -86,8 +93,7 @@ In `docker-compose.yaml` file there is dedicated part for environment variables 
 | KAFKA_TRUST_STORE_PASSWORD  | Password for the trust store file                                | 
 | GATEWAY_BASE_URL            | Base URL of the Gateway of the EHA services                      | 
 | DEMO_APP_API_KEY            | API key used by the BE app when contacting EHA services          | 
-| DEMO_APP_SUBSCRIPTION_ID    | Subscription used for interacting with EHA services              | 
-| KEYCLOAK_URL                | URL to specific realm in the Keycloak, used as IDP service       | 
+| DEMO_APP_SUBSCRIPTION_ID    | Subscription used for interacting with EHA services              |
 
 <br>
 
@@ -107,7 +113,7 @@ demo-backend.
 
 <br>
 
-### 5. Run the application using Docker Compose
+### 5. Run the application using Docker Compose 🚀
 
 The root folder contains functional `docker-compose.yml` file.
 

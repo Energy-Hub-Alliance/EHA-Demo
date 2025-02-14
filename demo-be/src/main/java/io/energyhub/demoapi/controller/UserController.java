@@ -1,7 +1,7 @@
 package io.energyhub.demoapi.controller;
 
 import io.energyhub.demoapi.auth.CurrentUser;
-import io.energyhub.demoapi.model.DemoApiUser;
+import io.energyhub.demoapi.eha.model.user.DemoApiUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class UserController {
 
     @Operation(summary = "Get info for logged in user", description = "Get info for logged in user.")
     @GetMapping("me")
-    private ResponseEntity<DemoApiUser> getCurrentUser() {
+    public ResponseEntity<DemoApiUser> getCurrentUser() {
         return ResponseEntity.ok(currentUser.getCurrentUser());
     }
 

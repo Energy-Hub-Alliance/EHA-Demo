@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { FooterWrapper } from '../../shared/wrappers/FooterWrapper';
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Manufacturer } from '../../shared/mappers/vehicleManufacturersToIcons';
 import { SelectableVehicleCard } from './SelectableVehicleCard';
 import { VehicleExternalModel } from '../../../../store/link/vehicleExternalModel';
 
@@ -42,30 +41,20 @@ export const LinkedVehicles = ({ vehicles }: LinkedVehiclesProps) => {
             <SelectableVehicleCard
               key={vehicle.externalVehicleId}
               vehicleId={vehicle.externalVehicleId}
-              manufacturer={vehicle.manufacturer as Manufacturer}
+              manufacturer={vehicle.manufacturer}
               model={vehicle.vehicleName}
               selected={true}
               disabled={true}
               onClick={() => {}}
+              vin={vehicle.vin}
             />
           );
         })}
       </Box>
       <FooterWrapper>
-        <Box
-          sx={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            px: 10,
-          }}
-        >
-          <Button variant="contained" fullWidth onClick={() => navigate('/')}>
-            {t('backToHomepage')}
-          </Button>
-        </Box>
+        <Button variant="contained" fullWidth onClick={() => navigate('/')}>
+          {t('backToHomepage')}
+        </Button>
       </FooterWrapper>
     </>
   );

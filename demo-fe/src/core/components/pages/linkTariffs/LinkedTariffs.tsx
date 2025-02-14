@@ -4,7 +4,6 @@ import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { SelectableTariffsCard } from './SelectableTariffsCard';
 import { TariffExternalModel } from '../../../../store/link/tariffExternalModel';
-import { SmartTarrifManufacturer } from '../../shared/mappers/smartTariffManufacturersToIcons';
 
 interface LinkedTariffsProps {
   tariffs: TariffExternalModel[];
@@ -43,7 +42,7 @@ export const LinkedTariffs = ({ tariffs }: LinkedTariffsProps) => {
               key={tariff.externalId}
               tariffId={tariff.externalId}
               tariffName={tariff.tariffName}
-              manufacturer={tariff.manufacturer as SmartTarrifManufacturer}
+              manufacturer={tariff.manufacturer}
               selected={true}
               disabled={true}
               onClick={() => {}}
@@ -52,20 +51,9 @@ export const LinkedTariffs = ({ tariffs }: LinkedTariffsProps) => {
         })}
       </Box>
       <FooterWrapper>
-        <Box
-          sx={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            px: 10,
-          }}
-        >
-          <Button variant="contained" fullWidth onClick={() => navigate('/')}>
-            {t('backToHomepage')}
-          </Button>
-        </Box>
+        <Button variant="contained" fullWidth onClick={() => navigate('/')}>
+          {t('backToHomepage')}
+        </Button>
       </FooterWrapper>
     </>
   );

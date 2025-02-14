@@ -1,28 +1,24 @@
-import { Box, Card, useTheme } from '@mui/material';
+import { Box, Card, Typography, useTheme } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import { useNavigate } from 'react-router-dom';
 import SmartTariffImage from '../../shared/assets/smartTariff/smart-tariff.svg?react';
-import {
-  SmartTarrifManufacturer,
-  smartTariffManufacturersToIcons,
-} from '../../shared/mappers/smartTariffManufacturersToIcons';
+import { usePersistedVendorInfo } from '../../../hooks/usePersistedVendorInfo';
 
 interface SingleSmartTariffCardProps {
   smartTariffId: string;
   smartTariffVendor: string;
+  smartTariffName: string;
 }
 
 export const SingleSmartTariffCard = ({
   smartTariffId,
   smartTariffVendor,
+  smartTariffName,
 }: SingleSmartTariffCardProps) => {
   const navigate = useNavigate();
   const { palette } = useTheme();
 
-  const SmartTariffVendorIcon =
-    smartTariffManufacturersToIcons[
-      smartTariffVendor as SmartTarrifManufacturer
-    ];
+  const vendorInfo = usePersistedVendorInfo(smartTariffVendor);
 
   return (
     <Card
@@ -47,8 +43,15 @@ export const SingleSmartTariffCard = ({
           p: 2,
         }}
       >
-        <Box display={'flex'} flexDirection="row" alignItems="center" gap={2}>
-          <SmartTariffVendorIcon key={smartTariffVendor} />
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          gap={2}
+        >
+          {vendorInfo.Icon}
+          <Typography>{smartTariffName}</Typography>
         </Box>
 
         <Box

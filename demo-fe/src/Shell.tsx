@@ -9,6 +9,7 @@ import { ReactKeycloakProvider } from '@react-keycloak/web';
 import Keycloak from 'keycloak-js';
 import { SplashScreen } from './core/components/pages/splashScreen/SplashScreen';
 import { environment } from './environment';
+import { DemoSnackbarProvider } from './core/components/shared/snackbar/DemoSnackbarProvider';
 
 export const Shell = () => {
   const client = new Keycloak({
@@ -42,7 +43,9 @@ export const Shell = () => {
           <StrictMode>
             <BrowserRouter>
               <AppThemeProvider>
-                <App />
+                <DemoSnackbarProvider>
+                  <App />
+                </DemoSnackbarProvider>
               </AppThemeProvider>
             </BrowserRouter>
           </StrictMode>

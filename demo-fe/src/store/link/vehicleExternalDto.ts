@@ -1,7 +1,7 @@
 export interface VehicleExternalDto {
   externalId: string;
   vin: string;
-  vehicleName: string;
+  name: string;
   vendor: string;
   isLinked: boolean;
 }

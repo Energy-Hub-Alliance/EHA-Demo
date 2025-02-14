@@ -1,15 +1,13 @@
 export interface TariffDto {
   id: string;
   userId: string;
-  locationId: string;
-  currency: string;
-  countryCode: string;
+  name: string;
   lastUpdated: string;
   isOnline: boolean;
   vendor: string;
 }
 
-export interface TariffPageEntry {
+export interface TariffsPageEntry {
   content: TariffDto[];
   totalElements: number;
   totalPages: number;

@@ -1,16 +1,16 @@
-export interface VehiclesDto {
+export interface VehicleDto {
   id: string;
   userId: string;
   vin: string;
-  vehicleName: string;
+  name: string;
   vendor: string;
   model: string;
   isOnline: boolean;
   lastUpdated: string;
 }
 
-export interface VehiclePageEntry {
-  content: VehiclesDto[];
+export interface VehiclesPageEntry {
+  content: VehicleDto[];
   totalElements: number;
   totalPages: number;
 }

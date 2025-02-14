@@ -7,7 +7,7 @@
 
   /* Firefox scrollbar */
   scrollbar-width: thin;
-  scrollbar-color: #00ff7f transparent;
+  scrollbar-color: #d0d0d4 transparent;
 }
 
 /* Webkit scrollbar */
@@ -17,7 +17,7 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #00ff7f;
+  background: #d0d0d4;
 }
 
 html {
@@ -39,4 +39,7 @@ button:focus,
 textarea:focus,
 input:focus {
   outline: none;
+}
+div.notistack-Snackbar {
+  min-width: min(calc(100dvw - 40px), 600px);
 }

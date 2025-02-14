@@ -1,7 +1,6 @@
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Manufacturer } from '../../shared/mappers/vehicleManufacturersToIcons';
 import { SingleVehicleCard } from './SingleVehicleCard';
 import { useGetVehiclesQuery } from '../../../../store/vehicle/vehicleApi';
 import { useMemo } from 'react';
@@ -21,7 +20,7 @@ export const VehiclesPage = () => {
       return {
         id: vehicle.vehicleId,
         model: vehicle.vehicleName || vehicle.model || '',
-        manufacturer: vehicle.manufacturer as Manufacturer,
+        manufacturer: vehicle.manufacturer,
       };
     });
   }, [vehicles?.vehicles]);
@@ -77,24 +76,13 @@ export const VehiclesPage = () => {
       )}
 
       <FooterWrapper>
-        <Box
-          sx={{
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            px: 10,
-          }}
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={() => navigate('connect')}
         >
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={() => navigate('connect')}
-          >
-            {t('connectVehicles')}
-          </Button>
-        </Box>
+          {t('connectVehicles')}
+        </Button>
       </FooterWrapper>
     </>
   );

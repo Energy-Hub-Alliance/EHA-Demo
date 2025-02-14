@@ -1,8 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { createBaseQuery } from '../baseQuery';
 import { environment } from '../../environment';
-import { TariffModel, TariffPageModel } from './tariffsModel';
-import { TariffDto, TariffPageEntry } from './tariffsDto';
+import { TariffsPageModel } from './tariffsModel';
 import { tariffsNormalizer } from './tariffsNormalizer';
 import { PriceModel } from './priceModel';
 import { PriceDto } from './priceDto';
@@ -14,15 +13,19 @@ import {
   consumptionStatsNormalizer,
 } from './consumptionNormalizer';
 import { ConsumptionPeriod } from '../../core/components/pages/smartTarrif/smartTariffUtils';
+import { TariffDto, TariffsPageEntry } from './tariffsDto';
+import { TariffDetailModel } from './details/tariffModel';
+import { TariffDetailDto } from './details/tariffDto';
+import { tariffDetailNormalizer } from './details/tariffNormalizer';
 
 export const tariffApi = createApi({
   reducerPath: 'tariffApi',
   tagTypes: ['Tariffs'],
   baseQuery: createBaseQuery(`${environment.demoAppServiceUrl}/tariffs`),
   endpoints: (builder) => ({
-    getTariffs: builder.query<TariffPageModel, void>({
+    getTariffs: builder.query<TariffsPageModel, void>({
       query: () => '',
-      transformResponse: (tariffsResponse: TariffPageEntry) => {
+      transformResponse: (tariffsResponse: TariffsPageEntry) => {
         return {
           totalElements: tariffsResponse.totalElements,
           totalPages: tariffsResponse.totalPages,
@@ -31,12 +34,13 @@ export const tariffApi = createApi({
           ),
         };
       },
+      providesTags: ['Tariffs'],
     }),
-    getTariffDetails: builder.query<TariffModel, string>({
+    getTariffDetails: builder.query<TariffDetailModel, string>({
       keepUnusedDataFor: 0,
       query: (tariffId) => `/${tariffId}`,
-      transformResponse: (tariffDetailsResponse: TariffDto) =>
-        tariffsNormalizer(tariffDetailsResponse),
+      transformResponse: (tariffDetailsResponse: TariffDetailDto) =>
+        tariffDetailNormalizer(tariffDetailsResponse),
     }),
     getPriceData: builder.query<PriceModel[], string>({
       keepUnusedDataFor: 0,
@@ -80,6 +84,15 @@ export const tariffApi = createApi({
       transformResponse: (consumptionStats: ConsumptionStatsDto) =>
         consumptionStatsNormalizer(consumptionStats),
     }),
+    deleteTariff: builder.mutation<void, { tariffId: string }>({
+      query: ({ tariffId }) => {
+        return {
+          url: `/${tariffId}`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: ['Tariffs'],
+    }),
   }),
 });
 
@@ -90,4 +103,5 @@ export const {
   useGetConsumptionDataQuery,
   useLazyGetConsumptionDataQuery,
   useGetConsumptionStatsQuery,
+  useDeleteTariffMutation,
 } = tariffApi;

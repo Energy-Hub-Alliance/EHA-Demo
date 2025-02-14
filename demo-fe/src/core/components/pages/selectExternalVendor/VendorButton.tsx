@@ -24,9 +24,17 @@ export const VendorButton = ({
       variant="outlined"
       size="large"
       startIcon={startingIcon}
-      sx={{ borderRadius: 3, color: theme.palette.text?.primary }}
+      sx={{
+        borderRadius: 3,
+        color: theme.palette.text?.primary,
+        '& .MuiButton-startIcon': {
+          m: '0px',
+        },
+      }}
     >
-      <Typography sx={{ pl: 2 }}>{displayName && vendorName}</Typography>
+      {displayName && vendorName ? (
+        <Typography sx={{ pl: 2 }}>{vendorName}</Typography>
+      ) : null}
     </Button>
   );
 };

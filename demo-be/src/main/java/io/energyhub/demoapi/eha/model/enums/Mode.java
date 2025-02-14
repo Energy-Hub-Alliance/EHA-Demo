@@ -1,34 +1,26 @@
 package io.energyhub.demoapi.eha.model.enums;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(enumAsRef = true, description = """
-        Operating mode of HVAC device.
-        * `HEAT` - Heating operating mode.
-        * `COOL` - Cooling operating mode.
-        * `AUTO` - Automatic operating mode.
-        * `REDUCED` - Reduced operating mode.
-        * `OFF` - Turned off device.
-        """)
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum Mode {
-    /**
-     * Heating operating mode.
-     */
-    HEAT,
-    /**
-     * Cooling operating mode.
-     */
-    COOL,
-    /**
-     * Cooling operating mode.
-     */
-    AUTO,
-    /**
-     * Reduced operating mode.
-     */
-    REDUCED,
-    /**
-     * Turned off device.
-     */
-    OFF
+
+    AUTO("autonomous"),
+
+    SELF_CONSUMPTION("self_consumption"),
+    EXPORT_FOCUS("export_focus"),
+    MANUAL("manual");
+
+    private final String value;
+
+    Mode(String value) {
+        this.value = value;
+    }
+
+    public static Optional<Mode> fromString(String string) {
+        return Arrays.stream(Mode.values())
+                .filter(item -> item.value.equalsIgnoreCase(string))
+                .findFirst();
+    }
 }

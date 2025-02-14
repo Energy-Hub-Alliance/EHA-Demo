@@ -1,19 +1,16 @@
-import { Box, ButtonBase, Card, Typography } from '@mui/material';
-import {
-  Manufacturer,
-  vehicleManufacturersToIcons,
-} from '../../shared/mappers/vehicleManufacturersToIcons';
-import VehicleHighlightedImage from '../../shared/assets/vehicle/vehicleHighlighted.png';
+import { Box, ButtonBase, Card, Typography, useTheme } from '@mui/material';
 import SelectedMark from '../../shared/assets/selectedMark.svg';
+import { usePersistedVendorInfo } from '../../../hooks/usePersistedVendorInfo';
 
 interface SelectableVehicleCardProps {
   vehicleId: string;
   model: string;
-  manufacturer: Manufacturer;
+  manufacturer: string;
   selected: boolean;
   disabled: boolean;
   onClick: (T: string) => void;
   testId?: string;
+  vin: string;
 }
 
 export const SelectableVehicleCard = ({
@@ -24,8 +21,10 @@ export const SelectableVehicleCard = ({
   selected,
   disabled,
   testId,
+  vin,
 }: SelectableVehicleCardProps) => {
-  const Icon = vehicleManufacturersToIcons[manufacturer];
+  const vendorInfo = usePersistedVendorInfo(manufacturer);
+  const { ui_vars } = useTheme();
 
   return (
     <ButtonBase
@@ -38,45 +37,51 @@ export const SelectableVehicleCard = ({
     >
       <Card
         data-testid={`${vehicleId}VehicleCard${testId}`}
-        sx={{ width: '100%', p: 0, position: 'relative', cursor: 'pointer' }}
+        sx={{
+          width: '100%',
+          p: 4,
+          position: 'relative',
+          cursor: 'pointer',
+        }}
       >
         <Box
-          sx={{
-            minHeight: '18rem',
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 3,
-            p: 2,
-          }}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          width="100%"
+          gap={2}
+          pb={4}
         >
           <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            width="100%"
-            gap={2}
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 2,
+              px: 6,
+              alignItems: 'center',
+            }}
           >
-            <Icon key={manufacturer} />
+            {vendorInfo.Icon}
             <Typography>{model}</Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                alignSelf: 'flex-end',
-                position: 'absolute',
-                right: 7,
-                top: 9,
-              }}
-            >
-              {selected ? <img src={SelectedMark} alt="Selected Mark" /> : null}
-            </Box>
           </Box>
 
-          <img style={{ maxHeight: '100%' }} src={VehicleHighlightedImage} />
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignSelf: 'flex-end',
+              position: 'absolute',
+              right: 14,
+              top: 14,
+            }}
+          >
+            {selected ? <img src={SelectedMark} alt="Selected Mark" /> : null}
+          </Box>
         </Box>
+        <Typography sx={{ fontWeight: 400, fontSize: ui_vars.font_size.s }}>
+          {vin}
+        </Typography>
       </Card>
     </ButtonBase>
   );

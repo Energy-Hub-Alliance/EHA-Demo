@@ -1,11 +1,11 @@
-import { VehiclesDto } from './vehiclesDto';
-import { VehiclesModel } from './vehiclesModel';
+import { VehicleDto } from './vehiclesDto';
+import { VehicleModel } from './vehiclesModel';
 
-export const vehiclesNormalizer = (vehicle: VehiclesDto): VehiclesModel => {
+export const vehiclesNormalizer = (vehicle: VehicleDto): VehicleModel => {
   return {
     vehicleId: vehicle.id ?? '',
     vin: vehicle.vin ?? '',
-    vehicleName: vehicle.vehicleName ?? '',
+    vehicleName: vehicle.name ?? '',
     userId: vehicle.userId ?? '',
     manufacturer: vehicle.vendor ?? '',
     model: vehicle.model ?? '',

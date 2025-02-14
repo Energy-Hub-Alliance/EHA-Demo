@@ -12,7 +12,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigate } from 'react-router-dom';
 import { LoadingButton } from '@mui/lab';
 import { selectTariffsFormValidationSchema } from './selectTariffsFormValidationSchema';
-import { SmartTarrifManufacturer } from '../../shared/mappers/smartTariffManufacturersToIcons';
 import { TariffExternalModel } from '../../../../store/link/tariffExternalModel';
 import { useLinkTariffMutation } from '../../../../store/link/linkApi';
 
@@ -103,9 +102,7 @@ export const SelectTariffsForm = ({
                   <SelectableTariffsCard
                     tariffId={tariff.externalId}
                     tariffName={tariff.tariffName}
-                    manufacturer={
-                      tariff.manufacturer as SmartTarrifManufacturer
-                    }
+                    manufacturer={tariff.manufacturer}
                     selected={
                       value.includes(tariff.externalId) || tariff.linked
                     }
@@ -131,26 +128,15 @@ export const SelectTariffsForm = ({
         </Box>
 
         <FooterWrapper>
-          <Box
-            sx={{
-              height: '100%',
-              width: '100%',
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'center',
-              px: 10,
-            }}
+          <LoadingButton
+            variant="contained"
+            fullWidth
+            disabled={!isDirty || !isValid}
+            loading={isLinking}
+            type="submit"
           >
-            <LoadingButton
-              variant="contained"
-              fullWidth
-              disabled={!isDirty || !isValid}
-              loading={isLinking}
-              type="submit"
-            >
-              {t('connectTariffs')}
-            </LoadingButton>
-          </Box>
+            {t('connectTariffs')}
+          </LoadingButton>
         </FooterWrapper>
       </form>
     </FormProvider>

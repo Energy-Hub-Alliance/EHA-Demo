@@ -1,11 +1,21 @@
 // ---------------------------------------- IMPORTS ---------------------------------------- //
 import { Box, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-
-import { PowerStateType } from '../../../../store/vehicle/vehicleModel';
+import { PowerStateEnum } from '../../../../store/vehicle/enums/PowerState';
+import { BatteryStateEnum } from '../../../../store/home-power/enums/batteryStateEnum';
+import { InverterStateEnum } from '../../../../store/home-power/enums/inverterStateEnum';
+import { ChargingStateEnum } from '../../../../store/charging-hardware/enums/chargingStateEnum';
 
 // ---------------------------------------- COMPONENT ---------------------------------------- //
-export const StatusChip = ({ status }: { status: PowerStateType }) => {
+export const StatusChip = ({
+  status,
+}: {
+  status:
+    | PowerStateEnum
+    | BatteryStateEnum
+    | InverterStateEnum
+    | ChargingStateEnum;
+}) => {
   const { palette, ui_vars } = useTheme();
   const { t } = useTranslation();
 

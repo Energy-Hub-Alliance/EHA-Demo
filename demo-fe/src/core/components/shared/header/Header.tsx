@@ -11,7 +11,7 @@ export const Header = () => {
   return (
     <Box
       sx={{
-        width: '100dvw',
+        width: '100%',
         height: theme.ui_vars.other.header_height,
         backgroundColor: theme.palette.background?.default,
         display: 'flex',

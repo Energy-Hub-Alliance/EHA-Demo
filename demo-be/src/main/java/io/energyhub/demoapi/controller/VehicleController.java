@@ -5,7 +5,9 @@ import io.energyhub.demoapi.eha.client.EhaVehicleApiClient;
 import io.energyhub.demoapi.eha.model.SuccessMessageDto;
 import io.energyhub.demoapi.eha.model.VehicleResponse;
 import io.energyhub.demoapi.eha.model.pagination.PageResponse;
-import io.energyhub.demoapi.eha.model.sort.VehicleSortRequest;
+import io.energyhub.demoapi.eha.model.sort.DeviceForUserSortRequest;
+import io.energyhub.demoapi.eha.model.vehicle.CommandType;
+import io.energyhub.demoapi.eha.model.vehicle.SubmitCommandResponse;
 import io.energyhub.demoapi.eha.model.vehicle.VehicleShortResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,10 +19,11 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@Tag(name = "User Vehicle Controller")
+@Tag(name = "Vehicle Controller")
 @RequestMapping("vehicles")
 @RequiredArgsConstructor
 public class VehicleController {
@@ -30,7 +33,7 @@ public class VehicleController {
 
     @Operation(summary = "All vehicles for user", description = "Returns a paginated list of all vehicles for the user.")
     @GetMapping
-    public PageResponse<VehicleShortResponse> getAllVehicles(@ParameterObject @Valid VehicleSortRequest request) {
+    public PageResponse<VehicleShortResponse> getAllVehicles(@ParameterObject @Valid DeviceForUserSortRequest request) {
         return ehaVehicleApiClient.getAllVehiclesByUserId(currentUser.getCurrentUser().getUserId(), request);
     }
 
@@ -70,4 +73,26 @@ public class VehicleController {
         }
     }
 
+    @Operation(summary = "Submit command for vehicle to start charging",
+            description = "This endpoint creates an asynchronously executed command request to start charging.")
+    @PostMapping(value = "{vehicleId}/commands/charging-start")
+    public SubmitCommandResponse chargingStart(
+            @Parameter(description = "Vehicle ID") @PathVariable(name = "vehicleId") UUID vehicleUuid) {
+        return ehaVehicleApiClient.chargingStart(currentUser.getCurrentUser().getUserId(), vehicleUuid);
+    }
+
+    @Operation(summary = "Submit command for vehicle to stop charging",
+            description = "This endpoint creates an asynchronously executed command request to stop charging.")
+    @PostMapping(value = "{vehicleId}/commands/charging-stop")
+    public SubmitCommandResponse chargingStop(
+            @Parameter(description = "Vehicle ID") @PathVariable(name = "vehicleId") UUID vehicleUuid) {
+        return ehaVehicleApiClient.chargingStop(currentUser.getCurrentUser().getUserId(), vehicleUuid);
+    }
+
+    @Operation(summary = "Vehicle commands", description = "Returns pending commands for vehicle")
+    @GetMapping(value = "{vehicleId}/commands")
+    public List<SubmitCommandResponse> getPendingVehicleCommands(
+            @Parameter(description = "Vehicle ID") @PathVariable(name = "vehicleId") UUID vehicleUuid){
+        return ehaVehicleApiClient.getPendingVehicleCommands(currentUser.getCurrentUser().getUserId(), vehicleUuid);
+    }
 }

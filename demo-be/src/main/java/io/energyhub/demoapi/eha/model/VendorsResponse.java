@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class VendorsResponse {
 
-    @Schema(description = "List of vehicle vendors which can be connected to the Energy Hub Alliance.",
+    @Schema(description = "List of vehicle vendors which can be connected to the Energy Hub.",
             example = """
                     [{"id": "TESLA",
                     "name" : "Tesla",
@@ -18,7 +18,7 @@ public class VendorsResponse {
                     """)
     private List<VendorResponse> vehicles;
 
-    @Schema(description = "List of tariff vendors which can be connected to the Energy Hub Alliance.",
+    @Schema(description = "List of tariff vendors which can be connected to the Energy Hub.",
             example = """
                     [{"id": "TIBBER",
                     "name" : "Tibber",
@@ -27,13 +27,32 @@ public class VendorsResponse {
                     """)
     private List<VendorResponse> tariffs;
 
-    @Schema(description = "List of hvac vendors which can be connected to the Energy Hub Alliance.",
+    @Schema(description = "List of HVAC vendors which can be connected to the Energy Hub.",
             example = """
                     [{"id": "VIESSMANN",
                     "name" : "Viessmann",
                     "required" : [],
-                    "logoUrl" : "https://energy-hub.io/api/vendors/v1/viesmann/logo"}]
+                    "logoUrl" : "https://energy-hub.io/api/vendors/v1/viessmann/logo"}]
                     """)
     private List<VendorResponse> hvac;
+
+    @Schema(description = "List of charger vendors which can be connected to the Energy Hub.",
+            example = """
+                    [{"id": "EASEE",
+                    "name" : "Easee",
+                    "required" : [],
+                    "logoUrl" : "https://energy-hub.io/api/vendors/v1/easee/logo"}]
+                    """)
+    private List<VendorResponse> chargers;
+
+    @Schema(description = "List of home power vendors which can be connected to the Energy Hub.",
+            example = """
+                    [{"id": "FRONIUS",
+                    "name" : "Fronius",
+                    "required" : [],
+                    "logoUrl" : "https://energy-hub.io/api/vendors/v1/fronius/logo"}]
+                    """)
+    private List<VendorResponse> homePower;
+
 
 }

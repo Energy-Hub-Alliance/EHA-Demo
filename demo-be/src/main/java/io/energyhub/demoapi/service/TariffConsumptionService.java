@@ -4,8 +4,8 @@ import io.energyhub.demoapi.constant.ConsumptionPeriod;
 import io.energyhub.demoapi.eha.client.EhaSmartEnergyApiClient;
 import io.energyhub.demoapi.eha.model.pagination.PageResponse;
 import io.energyhub.demoapi.eha.model.tariff.ConsumptionResponse;
-import io.energyhub.demoapi.model.ConsumptionPeriodResponse;
-import io.energyhub.demoapi.model.ConsumptionStatsResponse;
+import io.energyhub.demoapi.eha.model.tariff.ConsumptionPeriodResponse;
+import io.energyhub.demoapi.eha.model.tariff.ConsumptionStatsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

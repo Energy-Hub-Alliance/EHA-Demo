@@ -8,7 +8,7 @@ import {
 
 export const UpcomingFeaturesList = () => {
   const upcomingFeatures = Object.values(UpcomingFeatures);
-  const isOdd = upcomingFeatures.length / 2 !== 0;
+  const isOdd = upcomingFeatures.length % 2 !== 0;
   const [t] = useTranslation();
   return (
     <Stack flexDirection="column" alignItems="center" width="100%">

@@ -1,15 +1,11 @@
-import { Box, ButtonBase, Card, Stack, Typography } from '@mui/material';
+import { Box, ButtonBase, Card, Typography } from '@mui/material';
 import SelectedMark from '../../shared/assets/selectedMark.svg';
-import TariffIcon from '../../shared/assets/smartTariff/smart-tariff.svg';
-import {
-  SmartTarrifManufacturer,
-  smartTariffManufacturersToIcons,
-} from '../../shared/mappers/smartTariffManufacturersToIcons';
+import { usePersistedVendorInfo } from '../../../hooks/usePersistedVendorInfo';
 
 interface SelectableTariffCardProps {
   tariffId: string;
   tariffName?: string;
-  manufacturer: SmartTarrifManufacturer;
+  manufacturer: string;
   selected: boolean;
   disabled: boolean;
   onClick: (T: string) => void;
@@ -25,7 +21,7 @@ export const SelectableTariffsCard = ({
   disabled,
   testId,
 }: SelectableTariffCardProps) => {
-  const Icon = smartTariffManufacturersToIcons[manufacturer];
+  const vendorInfo = usePersistedVendorInfo(manufacturer);
 
   return (
     <ButtonBase
@@ -38,48 +34,33 @@ export const SelectableTariffsCard = ({
     >
       <Card
         data-testid={`${tariffId}TariffCard${testId}`}
-        sx={{ width: '100%', p: 0, position: 'relative', cursor: 'pointer' }}
+        sx={{ width: '100%', p: 4, position: 'relative', cursor: 'pointer' }}
       >
         <Box
-          sx={{
-            minHeight: '18rem',
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 3,
-            p: 2,
-          }}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          width="100%"
+          gap={2}
+          pb={4}
         >
+          {vendorInfo.Icon}
+
           <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            width="100%"
-            gap={2}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignSelf: 'flex-end',
+              position: 'absolute',
+              right: 14,
+              top: 14,
+            }}
           >
-            <Stack alignItems="center" justifyContent="center" gap={2}>
-              <Icon key={manufacturer} />
-              {tariffName ? <Typography>{tariffName}</Typography> : null}
-            </Stack>
-
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                alignSelf: 'flex-end',
-                position: 'absolute',
-                right: 7,
-                top: 9,
-              }}
-            >
-              {selected ? <img src={SelectedMark} alt="Selected Mark" /> : null}
-            </Box>
+            {selected ? <img src={SelectedMark} alt="Selected Mark" /> : null}
           </Box>
-
-          <img style={{ maxHeight: '100%' }} src={TariffIcon} />
         </Box>
+        {tariffName ? <Typography>{tariffName}</Typography> : null}
       </Card>
     </ButtonBase>
   );

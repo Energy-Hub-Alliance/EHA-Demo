@@ -3,7 +3,7 @@ package io.energyhub.demoapi.eha.client;
 import io.energyhub.demoapi.config.EhaApiFeignConfig;
 import io.energyhub.demoapi.eha.model.SuccessMessageDto;
 import io.energyhub.demoapi.eha.model.pagination.PageResponse;
-import io.energyhub.demoapi.eha.model.sort.TariffSortRequest;
+import io.energyhub.demoapi.eha.model.sort.DeviceForUserSortRequest;
 import io.energyhub.demoapi.eha.model.tariff.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -16,8 +16,8 @@ import java.util.UUID;
 public interface EhaSmartEnergyApiClient {
 
     @GetMapping("v1.0.0/users/{userId}/tariffs")
-    PageResponse<TariffResponse> getAllTariffsByUserId(@PathVariable String userId,
-                                                       @SpringQueryMap TariffSortRequest request);
+    PageResponse<TariffShortResponse> getAllTariffsByUserId(@PathVariable String userId,
+                                                       @SpringQueryMap DeviceForUserSortRequest request);
 
     @GetMapping("v1.0.0/users/{userId}/tariffs/{tariffId}")
     TariffResponse getTariffByUserIdAndTariffUuid(@PathVariable String userId,

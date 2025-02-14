@@ -7,7 +7,7 @@ export const vehicleExternalNormalizer = (
   return {
     externalVehicleId: vehicleExternal.externalId ?? '',
     vin: vehicleExternal.vin ?? '',
-    vehicleName: vehicleExternal.vehicleName ?? '',
+    vehicleName: vehicleExternal.name ?? '',
     manufacturer: vehicleExternal.vendor ?? '',
     linked: vehicleExternal.isLinked ?? '',
   };

@@ -3,6 +3,8 @@ package io.energyhub.demoapi.eha.client;
 import io.energyhub.demoapi.config.EhaApiFeignConfig;
 import io.energyhub.demoapi.eha.model.ConnectUrlResponse;
 import io.energyhub.demoapi.eha.model.VendorsResponse;
+import io.energyhub.demoapi.eha.model.HomePowerUserLinkRequest;
+import io.energyhub.demoapi.eha.model.charger.ChargerUserLinkRequest;
 import io.energyhub.demoapi.eha.model.hvac.HvacUserLinkRequest;
 import io.energyhub.demoapi.eha.model.tariff.TariffUserLinkRequest;
 import io.energyhub.demoapi.eha.model.vehicle.VehicleUserLinkRequest;
@@ -26,4 +28,8 @@ public interface EhaConnectApiClient {
     @GetMapping("v1.0.0/connections/hvacs")
     ConnectUrlResponse createConnectUrlForHvacVendor(@RequestBody HvacUserLinkRequest request);
 
+    @PostMapping("v1.0.0/connections/home-powers")
+    ConnectUrlResponse createConnectUrlForHomePowerVendor(@RequestBody HomePowerUserLinkRequest request);
+    @PostMapping("v1.0.0/connections/chargers")
+    ConnectUrlResponse createConnectUrlForChargerVendor(@RequestBody ChargerUserLinkRequest chargerUserLinkRequest);
 }

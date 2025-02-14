@@ -1,5 +1,6 @@
 export interface PriceDto {
-  startsAt: string;
   totalPrice: number;
-  vat: number;
+  energyPrice: number;
+  taxAndLevies: number;
+  startDate: string;
 }

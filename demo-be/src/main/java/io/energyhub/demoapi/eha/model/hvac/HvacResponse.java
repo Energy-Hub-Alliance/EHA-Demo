@@ -21,38 +21,42 @@ import java.util.UUID;
 public class HvacResponse {
 
     @NotNull
-    @Schema(description = "The ID of the hvac.")
+    @Schema(description = "The ID of the HVAC.", example = "6eb5497d-c6bb-4290-84ef-4409fe9501f1")
     @JsonProperty(value = "id", index = 1)
     private UUID uuid;
 
     @NotBlank
     @Schema(description = "The ID of the user.", example = "896f9d5a-b618-48a2-98ae-957059bf1bc9")
+    @JsonProperty(index = 2)
     private String userId;
 
-    @Schema(description = "The name of the HVAC in human-readable format.", example = "Viessmann Vitotronic 200")
-    private String hvacName;
-
-    @Schema(description = "The timestamp of the last update of any variable of the hvac.")
+    @Schema(description = "The timestamp of the last update of any variable of the HVAC.")
+    @JsonProperty(index = 8)
     private LocalDateTime lastUpdated;
 
-    @Schema(description = "The location ID of the hvac.")
+    @Schema(description = "The location ID of the HVAC.")
     @Valid
+    @JsonProperty(index = 3)
     private UUID locationId;
 
     @NotNull
-    @Schema(description = "Indicates if the vehicle is reachable trough the vendor system.", example = "true")
+    @Schema(description = "Indicates if the HVAC is reachable trough the vendor system.", example = "true")
+    @JsonProperty(index = 4)
     private Boolean isOnline;
 
-    @Schema(description = "Object of static data of a hvac.")
+    @Schema(description = "Object of static data of a HVAC.")
     @Valid
     @NotNull
+    @JsonProperty(index = 5)
     private HvacStaticData staticData;
 
-    @Schema(description = "Object of the climate state of the hvac.")
+    @Schema(description = "Object of the climate state of the HVAC.")
     @Valid
+    @JsonProperty(index = 6)
     private HvacClimateState climateState;
 
-    @Schema(description = "Object of the power state of the hvac.")
+    @Schema(description = "Object of the power state of the HVAC.")
     @Valid
+    @JsonProperty(index = 7)
     private HvacPowerState powerState;
 }

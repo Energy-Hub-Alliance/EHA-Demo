@@ -8,11 +8,12 @@ import { LinkedTariffs } from './LinkedTariffs';
 import { SelectTariffsForm } from './SelectTariffsForm';
 import { NoTariffs } from './NoTariffs';
 import { useHandleLoginCanceled } from '../../../hooks/useHandleLoginCanceled';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 export const SelectTariffsPage = () => {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
-  const vendorAccountId = queryParams.get('vendorAccount') || '';
+  const vendorAccountId = queryParams.get('vendorAccount');
   const errorParam = queryParams.get('error');
   useHandleLoginCanceled(errorParam);
 
@@ -20,9 +21,7 @@ export const SelectTariffsPage = () => {
     data: tariffs,
     isLoading,
     isError,
-  } = useGetVendorAccountTariffsQuery(vendorAccountId, {
-    skip: !vendorAccountId,
-  });
+  } = useGetVendorAccountTariffsQuery(vendorAccountId ?? skipToken);
 
   const receivedTariffs = useMemo(() => {
     return tariffs?.tariffs.map((tariff) => tariff);
@@ -30,7 +29,7 @@ export const SelectTariffsPage = () => {
 
   if (isLoading) return <Loader />;
   if (isError) return <ErrorPage />;
-  return receivedTariffs ? (
+  return receivedTariffs && vendorAccountId ? (
     <>
       <Header />
       {receivedTariffs.length > 0 &&

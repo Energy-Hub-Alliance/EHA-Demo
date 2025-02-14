@@ -14,7 +14,9 @@ export const FooterWrapper = ({ children }: FooterWrapperProps) => {
         width: '100%',
         textAlign: 'center',
         height: ui_vars.other.footer_height,
-        p: 2.5,
+        pt: 2.5,
+        px: 5,
+        pb: 8,
         backgroundColor: palette.background?.default,
       }}
     >

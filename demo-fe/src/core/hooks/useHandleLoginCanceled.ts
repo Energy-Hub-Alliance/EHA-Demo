@@ -5,7 +5,12 @@ export const useHandleLoginCanceled = (errorParameter: string | null) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (errorParameter === 'login_cancelled') {
+    if (
+      // login_cancelled - when user cancels on Vendors login page
+      // UserTerminatedFlow - when user cancels on Server Side Rendered HTML page
+      errorParameter === 'login_cancelled' ||
+      errorParameter === 'UserTerminatedFlow'
+    ) {
       navigate('/');
     }
   }, [errorParameter, navigate]);

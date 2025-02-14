@@ -3,9 +3,15 @@ import { useMemo, useState } from 'react';
 import { stringEnumToArray } from '../../shared/mappers/stringEnumToArray';
 import { useTranslation } from 'react-i18next';
 import { PriceChart } from './PriceChart';
-import { PricePeriod, formatPriceDuration } from './smartTariffUtils';
+import {
+  PricePeriod,
+  SmartTariffDetail,
+  formatPriceDuration,
+} from './smartTariffUtils';
 import { PriceModel } from '../../../../store/tariff/priceModel';
-import { SmartTariffDetailsPairCard } from './SmartTariffDetailsPairCard';
+import PriceDownIcon from '../../shared/assets/smartTariff/details/price-down.svg?react';
+import PriceUpIcon from '../../shared/assets/smartTariff/details/price-up.svg?react';
+import { DoubleDetailCard } from '../../shared/components/DoubleDetailCard';
 
 export const Prices = ({
   prices,
@@ -117,19 +123,26 @@ export const Prices = ({
       <Box width="100%">
         <PriceChart priceData={priceTotalValues} priceCurrency={currency} />
       </Box>
-      <SmartTariffDetailsPairCard
-        firstDetail={{
-          smartTariffDetail: 'MAX_PRICE',
-          detailValue: calculatedPrice?.max?.total_price.toFixed(2) ?? '',
+
+      <DoubleDetailCard
+        firstElement={{
+          icon: PriceUpIcon,
+          label: t(`detailsTariffs.${SmartTariffDetail.MAX_PRICE}`),
           unit: currency ?? '',
+          value: calculatedPrice?.max?.total_price
+            ? calculatedPrice?.max?.total_price.toFixed(2)
+            : calculatedPrice?.max?.total_price,
           additionalInfo: calculatedPrice?.max?.starts_at
             ? formatPriceDuration(calculatedPrice?.max?.starts_at)
             : '',
         }}
-        secondDetail={{
-          smartTariffDetail: 'MIN_PRICE',
-          detailValue: calculatedPrice?.min?.total_price.toFixed(2) ?? '',
+        secondElement={{
+          icon: PriceDownIcon,
+          label: t(`detailsTariffs.${SmartTariffDetail.MIN_PRICE}`),
           unit: currency ?? '',
+          value: calculatedPrice?.min?.total_price
+            ? calculatedPrice?.min?.total_price.toFixed(2)
+            : calculatedPrice?.min?.total_price,
           additionalInfo: calculatedPrice?.min?.starts_at
             ? formatPriceDuration(calculatedPrice?.min?.starts_at)
             : '',

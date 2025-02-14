@@ -8,11 +8,12 @@ import { LinkedVehicles } from './LinkedVehicles';
 import { SelectVehiclesForm } from './SelectVehiclesForm';
 import { NoVehicles } from './NoVehicles';
 import { useHandleLoginCanceled } from '../../../hooks/useHandleLoginCanceled';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 export const SelectVehiclesPage = () => {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
-  const vendorAccountId = queryParams.get('vendorAccount') || '';
+  const vendorAccountId = queryParams.get('vendorAccount');
   const errorParam = queryParams.get('error');
   useHandleLoginCanceled(errorParam);
 
@@ -20,9 +21,7 @@ export const SelectVehiclesPage = () => {
     data: vehicles,
     isLoading,
     isError,
-  } = useGetVendorAccountVehiclesQuery(vendorAccountId, {
-    skip: !vendorAccountId,
-  });
+  } = useGetVendorAccountVehiclesQuery(vendorAccountId ?? skipToken);
 
   const receivedVehicles = useMemo(() => {
     return vehicles?.vehicles.map((vehicle) => vehicle);
@@ -30,7 +29,7 @@ export const SelectVehiclesPage = () => {
 
   if (isLoading) return <Loader />;
   if (isError) return <ErrorPage />;
-  return receivedVehicles ? (
+  return receivedVehicles && vendorAccountId ? (
     <>
       <Header />
       {receivedVehicles.length > 0 &&

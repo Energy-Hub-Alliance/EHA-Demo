@@ -1,7 +1,7 @@
 export interface TariffExternalDto {
   externalId: string;
   countryCode: string;
-  tariffName: string;
+  name: string;
   vendor: string;
   isLinked: boolean;
 }

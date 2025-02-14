@@ -1,4 +1,4 @@
-export interface VehiclesModel {
+export interface VehicleModel {
   vehicleId: string;
   userId: string;
   vin: string;
@@ -9,8 +9,8 @@ export interface VehiclesModel {
   lastUpdated: string;
 }
 
-export interface VehiclePageModel {
-  vehicles: VehiclesModel[];
+export interface VehiclesPageModel {
+  vehicles: VehicleModel[];
   totalElements: number;
   totalPages: number;
 }

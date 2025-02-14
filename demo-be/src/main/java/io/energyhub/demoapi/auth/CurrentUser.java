@@ -1,6 +1,6 @@
 package io.energyhub.demoapi.auth;
 
-import io.energyhub.demoapi.model.DemoApiUser;
+import io.energyhub.demoapi.eha.model.user.DemoApiUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;

@@ -7,7 +7,7 @@ import io.energyhub.demoapi.eha.model.SuccessMessageDto;
 import io.energyhub.demoapi.eha.model.hvac.HvacResponse;
 import io.energyhub.demoapi.eha.model.hvac.HvacShortResponse;
 import io.energyhub.demoapi.eha.model.pagination.PageResponse;
-import io.energyhub.demoapi.eha.model.sort.HvacSortRequest;
+import io.energyhub.demoapi.eha.model.sort.DeviceForUserSortRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/hvacs")
 @RequiredArgsConstructor
-@Tag(name = "User Hvac Controller")
+@Tag(name = "Hvac Controller")
 public class HvacController {
 
     private final EhaHvacApiClient ehaHvacApiClient;
@@ -34,7 +34,7 @@ public class HvacController {
     @Operation(summary = "All hvacs for user", description = "Returns a paginated list of all hvacs that belong to the user.")
     @GetMapping
     public PageResponse<HvacShortResponse> getAllHvacs(
-            @ParameterObject @Valid HvacSortRequest request
+            @ParameterObject @Valid DeviceForUserSortRequest request
     ) {
         return ehaHvacApiClient.getAllHvacs(currentUser.getCurrentUser().getUserId(), request);
     }

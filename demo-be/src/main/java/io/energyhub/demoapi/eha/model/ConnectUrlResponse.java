@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Schema(description = "An object containing the URL which is used to redirect the user to the connect page or vendor login.")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -14,6 +15,6 @@ import lombok.NoArgsConstructor;
 public class ConnectUrlResponse {
 
     @NotBlank
-    @Schema(description = "The connect URL to follow for redirect to vendor IDP.", example = "https://svc-connect.energy-hub.io/bea09c5f-9d37-4562-b54a-dedb48d7aaf4/redirect")
+    @Schema(description = "The URL to follow to redirect to connect page or IDP of the vendor.", example = "https://svc-connect.energy-hub.io/bea09c5f-9d37-4562-b54a-dedb48d7aaf4/redirect")
     private String url;
 }

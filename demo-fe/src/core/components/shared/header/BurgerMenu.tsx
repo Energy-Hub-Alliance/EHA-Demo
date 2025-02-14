@@ -49,6 +49,27 @@ export const BurgerMenu = () => {
       },
     },
     {
+      label: 'HVACS',
+      action: () => {
+        navigate('/hvacs');
+        setIsMenuOpened(false);
+      },
+    },
+    {
+      label: 'HOME_POWER',
+      action: () => {
+        navigate('/home-power');
+        setIsMenuOpened(false);
+      },
+    },
+    {
+      label: 'CHARGING_HARDWARE',
+      action: () => {
+        navigate('/charging-hardware');
+        setIsMenuOpened(false);
+      },
+    },
+    {
       label: 'LOG_OUT',
       action: () => {
         keycloak.logout();

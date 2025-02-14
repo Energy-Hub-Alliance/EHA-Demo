@@ -1,17 +1,14 @@
 import { Box, Card, Typography, useTheme } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
-import {
-  Manufacturer,
-  vehicleManufacturersToIcons,
-} from '../../shared/mappers/vehicleManufacturersToIcons';
 import { useNavigate } from 'react-router-dom';
 import { useGetVehicleImageQuery } from '../../../../store/vehicle/vehicleApi';
 import VehicleHighlightedImage from '../../shared/assets/vehicle/vehicleHighlighted.png';
+import { usePersistedVendorInfo } from '../../../hooks/usePersistedVendorInfo';
 
 interface SingleVehicleCardProps {
   vehicleId: string;
   vehicleModel: string;
-  manufacturer: Manufacturer;
+  manufacturer: string;
 }
 
 export const SingleVehicleCard = ({
@@ -24,7 +21,8 @@ export const SingleVehicleCard = ({
   const { data: vehicleImage } = useGetVehicleImageQuery(vehicleId || '', {
     skip: vehicleId === '',
   });
-  const ManufacturerIcon = vehicleManufacturersToIcons[manufacturer];
+
+  const vendorInfo = usePersistedVendorInfo(manufacturer);
 
   return (
     <Card
@@ -50,7 +48,7 @@ export const SingleVehicleCard = ({
         }}
       >
         <Box display={'flex'} flexDirection="row" alignItems="center" gap={2}>
-          <ManufacturerIcon key={manufacturer} />
+          {vendorInfo.Icon}
           <Typography>{vehicleModel}</Typography>
         </Box>
 
@@ -66,7 +64,7 @@ export const SingleVehicleCard = ({
           }}
         >
           {vehicleImage ? (
-            <img src={vehicleImage} alt="vehicle" height={250} />
+            <img src={vehicleImage} alt="vehicle" height={150} />
           ) : (
             <img
               src={VehicleHighlightedImage}

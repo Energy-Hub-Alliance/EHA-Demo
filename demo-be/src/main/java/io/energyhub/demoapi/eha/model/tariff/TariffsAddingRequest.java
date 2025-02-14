@@ -13,10 +13,10 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Vendor and list of external tariff ids that should be add into EHA system")
+@Schema(description = "Object for tariff IDs request that should be added to the Energy Hub.")
 public class TariffsAddingRequest {
 
     @NotEmpty
-    @Schema(description = "List of external IDs of tariffs to be linked to the Energy Hub Alliance.", example = "[\"8413731391660801\"]")
+    @Schema(description = "List of external IDs of tariffs to be linked to the Energy Hub.", example = "[\"8413731391660801\"]")
     private Set<String> externalTariffs;
 }

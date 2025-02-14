@@ -1,5 +1,6 @@
 package io.energyhub.demoapi.eha.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,37 +17,16 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Response object of the schedules for each day of the week.")
 public class ScheduleResponse {
 
     @NotBlank
     @Schema(description = "The timezone of the schedule.", example = "Europe/Berlin")
+    @JsonProperty(index = 1)
     private String timeZone;
 
     @NotNull
-    @Schema(description = "The schedule of monday.")
-    private List<ScheduleByWeekday> monday = new ArrayList<>();
-
-    @NotNull
-    @Schema(description = "The schedule of tuesday.")
-    private List<ScheduleByWeekday> tuesday = new LinkedList<>();
-
-    @NotNull
-    @Schema(description = "The schedule of wednesday.")
-    private List<ScheduleByWeekday> wednesday = new ArrayList<>();
-
-    @NotNull
-    @Schema(description = "The schedule of thursday.")
-    private List<ScheduleByWeekday> thursday = new ArrayList<>();
-
-    @NotNull
-    @Schema(description = "The schedule of friday.")
-    private List<ScheduleByWeekday> friday = new ArrayList<>();
-
-    @NotNull
-    @Schema(description = "The schedule of saturday.")
-    private List<ScheduleByWeekday> saturday = new ArrayList<>();
-
-    @NotNull
-    @Schema(description = "The schedule of sunday.")
-    private List<ScheduleByWeekday> sunday = new ArrayList<>();
+    @Schema(description = "The list of schedule events.")
+    @JsonProperty(index = 2)
+    private List<ScheduleEvent> schedules = new ArrayList<>();
 }

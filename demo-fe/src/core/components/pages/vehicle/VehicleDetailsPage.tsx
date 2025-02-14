@@ -1,24 +1,9 @@
 // ---------------------------------------- IMPORTS ---------------------------------------- //
-import {
-  Box,
-  Card,
-  useTheme,
-  Typography,
-  Snackbar,
-  IconButton,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useEffect, useState } from 'react';
+import { Box, Card, useTheme, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-
-import {
-  Manufacturer,
-  vehicleManufacturersToIcons,
-} from '../../shared/mappers/vehicleManufacturersToIcons';
 import { StatusChip } from './StatusChip';
-import { VehicleDetailsPairCard } from './VehicleDetailsPairCard';
-import BatteryMaskSvg from '../../shared/assets/icons/battery-mask.svg';
 import RefreshIcon from '../../shared/assets/icons/refresh.svg?react';
 import VinIcon from '../../shared/assets/vehicle/details/vin.svg?react';
 import OdometerIcon from '../../shared/assets/vehicle/details/odometer.svg?react';
@@ -27,14 +12,47 @@ import {
   useLazyGetRefreshedVehicleDetailsQuery,
   useGetVehicleDetailsQuery,
   useGetVehicleImageQuery,
+  useGetVehicleCommandsQuery,
+  useStartVehicleChargeCommandMutation,
+  useStopVehicleChargeCommandMutation,
 } from '../../../../store/vehicle/vehicleApi';
-import { VehicleModel } from '../../../../store/vehicle/vehicleModel';
+import { VehicleDetailModel } from '../../../../store/vehicle/details/vehicleModel';
 import { Loader } from '../../shared/loader/Loader';
 import VehicleHighLightedImage from '../../shared/assets/vehicle/vehicleHighlighted.png';
 import { EventSourcePolyfill } from 'event-source-polyfill';
-import { VehicleDto } from '../../../../store/vehicle/vehicleDto';
-import { vehicleNormalizer } from '../../../../store/vehicle/vehicleNormalizer';
+import { VehicleDetailDto } from '../../../../store/vehicle/details/vehicleDto';
+import { vehicleDetailNormalizer } from '../../../../store/vehicle/details/vehicleNormalizer';
 import { environment } from '../../../../environment';
+import BatteryHeaterIcon from '../../shared/assets/vehicle/details/battery-heater.svg?react';
+import ChargingSpeedIcon from '../../shared/assets/vehicle/details/charging-speed.svg?react';
+import CurrentTemperatureIcon from '../../shared/assets/vehicle/details/current-temperature.svg?react';
+import EstimatedRangeIcon from '../../shared/assets/vehicle/details/estimated-range.svg?react';
+import HeatingCoolingIcon from '../../shared/assets/vehicle/details/heating-cooling.svg?react';
+import TargetTemperatureIcon from '../../shared/assets/vehicle/details/target-temperature.svg?react';
+import {
+  DoubleDetailCard,
+  EMPTY_VALUE_PLACEHOLDER,
+} from '../../shared/components/DoubleDetailCard';
+import { isValueValid } from '../../../../store/util/isValueValid';
+import { FooterWrapper } from '../../shared/wrappers/FooterWrapper';
+import { DeleteButton } from '../../shared/components/DeleteButton';
+import { DeleteVehicleDialog } from './DeleteVehicleDialog';
+import { showSnackbar } from '../../shared/snackbar/snackbarUtils';
+import { ChargingVehicleButton } from './ChargingVehicleButton';
+import { ChargingButtonState } from './chargingButtonStateEnum';
+import { AnimatedBatteryCard } from '../../shared/components/AnimatedBatteryCard';
+import { PowerStateEnum } from '../../../../store/vehicle/enums/PowerState';
+import { usePersistedVendorInfo } from '../../../hooks/usePersistedVendorInfo';
+import { getApiErrorMessage } from '../../../../store/util/getApiErrorMessage';
+
+enum VehicleDetail {
+  BATTERY_HEATER = 'BATTERY_HEATER',
+  CHARGING_SPEED = 'CHARGING_SPEED',
+  CURRENT_TEMPERATURE = 'CURRENT_TEMPERATURE',
+  ESTIMATED_RANGE = 'ESTIMATED_RANGE',
+  HEATING_COOLING = 'HEATING_COOLING',
+  TARGET_TEMPERATURE = 'TARGET_TEMPERATURE',
+}
 
 // ---------------------------------------- COMPONENT ---------------------------------------- //
 export const VehicleDetailsPage = () => {
@@ -42,13 +60,43 @@ export const VehicleDetailsPage = () => {
   const { palette, ui_vars } = useTheme();
   const { vehicleId } = useParams<{ vehicleId: string }>();
 
+  // ---------------- States
   const [token, setToken] = useState(
     `Bearer ${localStorage.getItem('idToken')}`
   );
 
+  const [vehicleDetails, setVehicleDetails] =
+    useState<VehicleDetailModel | null>(null);
+  const [buttonState, setButtonState] = useState<'START' | 'STOP' | 'PENDING'>(
+    'START'
+  );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const vendorInfo = usePersistedVendorInfo(vehicleDetails?.manufacturer);
+
+  const { data: vehicleCommands } = useGetVehicleCommandsQuery(
+    vehicleId || '',
+    { skip: !vehicleId }
+  );
+
+  useEffect(() => {
+    if (vehicleDetails?.stateOfCharge.powerStateId === 'CHARGING') {
+      setButtonState('STOP');
+    }
+  }, [vehicleDetails?.stateOfCharge.powerStateId]);
+
+  useEffect(() => {
+    if (vehicleCommands && vehicleCommands?.length !== 0) {
+      const lastElement = vehicleCommands[vehicleCommands.length - 1];
+      if (lastElement.state === 'PENDING') {
+        setButtonState('PENDING');
+      }
+    }
+  }, [vehicleCommands]);
+
   useEffect(() => {
     const eventSource = new EventSourcePolyfill(
-      `${environment.demoAppServiceUrl}/sse`,
+      `${environment.demoAppServiceUrl}/sse/vehicles`,
       {
         headers: {
           Authorization: token,
@@ -70,10 +118,47 @@ export const VehicleDetailsPage = () => {
     };
 
     eventSource.onmessage = (event) => {
-      const newDetailsDto = JSON.parse(event.data) as VehicleDto;
-      const normalizedDetails = vehicleNormalizer(newDetailsDto);
-      if (vehicleId === normalizedDetails.vehicleDatabaseId) {
-        setVehicleDetails(normalizedDetails);
+      const messageEvent = JSON.parse(event.data);
+
+      if (messageEvent.type === 'vehicle.update') {
+        const newDetailsDto = messageEvent.data as VehicleDetailDto;
+        const normalizedDetails = vehicleDetailNormalizer(newDetailsDto);
+        if (vehicleId === normalizedDetails.vehicleDatabaseId) {
+          setVehicleDetails(normalizedDetails);
+        }
+      }
+
+      if (messageEvent.type === 'vehicle.command') {
+        if (
+          messageEvent.data.type === 'CHARGING_START' &&
+          messageEvent.data.state === 'FAILED'
+        ) {
+          setButtonState('START');
+          showSnackbar('error', t('chargingCommands.startFailed'));
+        }
+
+        if (
+          messageEvent.data.type === 'CHARGING_START' &&
+          messageEvent.data.state === 'EXECUTED'
+        ) {
+          setButtonState('STOP');
+          showSnackbar('success', t('chargingCommands.startExecuted'));
+        }
+
+        if (
+          messageEvent.data.type === 'CHARGING_STOP' &&
+          messageEvent.data.state === 'FAILED'
+        ) {
+          setButtonState('STOP');
+          showSnackbar('error', t('chargingCommands.stopFailed'));
+        }
+        if (
+          messageEvent.data.type === 'CHARGING_STOP' &&
+          messageEvent.data.state === 'EXECUTED'
+        ) {
+          setButtonState('START');
+          showSnackbar('success', t('chargingCommands.stopExecuted'));
+        }
       }
     };
 
@@ -82,15 +167,7 @@ export const VehicleDetailsPage = () => {
     return () => {
       eventSource.close();
     };
-  }, [token, vehicleId]);
-
-  const [snackbarState, setSnackbarState] = useState<{
-    isOpen: boolean;
-    status: 'primary' | 'success';
-  }>({ isOpen: false, status: 'success' });
-  const [vehicleDetails, setVehicleDetails] = useState<VehicleModel | null>(
-    null
-  );
+  }, [t, token, vehicleId]);
 
   const { data: vehicle, isLoading: isGetDetailsLoading } =
     useGetVehicleDetailsQuery(vehicleId as string, {});
@@ -105,17 +182,11 @@ export const VehicleDetailsPage = () => {
   const handleRefresh = () => {
     trigger(vehicleId as string).then((result) => {
       if (result.isSuccess) {
-        setVehicleDetails(result.data as VehicleModel);
-        setSnackbarState({
-          isOpen: true,
-          status: 'success',
-        });
+        setVehicleDetails(result.data as VehicleDetailModel);
+        showSnackbar('success', t(`detailsSnackbar.success`));
       }
       if (result.isError) {
-        setSnackbarState({
-          isOpen: true,
-          status: 'primary',
-        });
+        showSnackbar('error', t(`detailsSnackbar.primary`));
       }
     });
   };
@@ -126,11 +197,40 @@ export const VehicleDetailsPage = () => {
     }
   }, [vehicle]);
 
+  const [vehicleCommandStart] = useStartVehicleChargeCommandMutation();
+
+  const [vehicleCommandStop] = useStopVehicleChargeCommandMutation();
+
+  const handleVehicleCommand = useCallback(
+    (command: 'CHARGING_START' | 'CHARGING_STOP') => {
+      if (!vehicleId) {
+        return;
+      }
+      if (command === 'CHARGING_START') {
+        return vehicleCommandStart({ vehicleId: vehicleId })
+          .unwrap()
+          .then(() => {})
+          .catch((error) => {
+            const errorName = getApiErrorMessage(error);
+            showSnackbar('error', t(`errorCodes.${errorName}`));
+          });
+      }
+
+      if (command === 'CHARGING_STOP') {
+        return vehicleCommandStop({ vehicleId: vehicleId })
+          .unwrap()
+          .then(() => {})
+          .catch((error) => {
+            const errorName = getApiErrorMessage(error);
+            showSnackbar('error', t(`errorCodes.${errorName}`));
+          });
+      }
+    },
+    [vehicleId, vehicleCommandStart, t, vehicleCommandStop]
+  );
+
   if (isRefreshLoading || isGetDetailsLoading || !vehicleDetails)
     return <Loader />;
-
-  const ManufacturerIcon =
-    vehicleManufacturersToIcons[vehicleDetails.manufacturer as Manufacturer];
 
   return (
     <>
@@ -152,6 +252,7 @@ export const VehicleDetailsPage = () => {
           gap: 6,
           height: `calc(100dvh - ${ui_vars.other.header_height})`,
           overflow: 'auto',
+          pb: `calc(${ui_vars.other.footer_height} + 2rem)`,
         }}
       >
         <Box
@@ -164,12 +265,7 @@ export const VehicleDetailsPage = () => {
         >
           <Box display={'flex'} alignItems={'center'} gap={3}>
             {/* -------------------------- Manufacturer -------------------------- */}
-            <ManufacturerIcon
-              style={{
-                width: ui_vars.font_size.xl,
-                height: ui_vars.font_size.xl,
-              }}
-            />
+            {vendorInfo.Icon}
 
             <Typography
               fontWeight={500}
@@ -177,7 +273,7 @@ export const VehicleDetailsPage = () => {
               lineHeight={1}
               textTransform={'capitalize'}
             >
-              {vehicleDetails.manufacturer.toLowerCase()}
+              {vendorInfo.name}
             </Typography>
 
             {/* -------------------------- Model -------------------------- */}
@@ -226,7 +322,7 @@ export const VehicleDetailsPage = () => {
           }}
         >
           {vehicleImage ? (
-            <img src={vehicleImage} alt="vehicle" height={250} />
+            <img src={vehicleImage} alt="vehicle" height={150} />
           ) : (
             <img
               src={VehicleHighLightedImage}
@@ -238,6 +334,30 @@ export const VehicleDetailsPage = () => {
 
         {/* -------------------------- Status chip -------------------------- */}
         <StatusChip status={vehicleDetails.stateOfCharge.powerStateId} />
+        <ChargingVehicleButton
+          onClick={() => {
+            if (buttonState === 'START') {
+              handleVehicleCommand('CHARGING_START');
+              setButtonState('PENDING');
+            }
+            if (buttonState === 'STOP') {
+              handleVehicleCommand('CHARGING_STOP');
+              setButtonState('PENDING');
+            }
+          }}
+          state={ChargingButtonState[buttonState]}
+          disabled={vehicleDetails.stateOfCharge.powerStateId === 'UNPLUGGED'}
+        />
+
+        <AnimatedBatteryCard
+          charging={
+            vehicleDetails.stateOfCharge.powerStateId ===
+            PowerStateEnum.CHARGING
+          }
+          stateOfCharge={vehicleDetails.stateOfCharge.stateOfCharge}
+          chargeLimitMax={vehicleDetails.stateOfCharge.chargeLimitMax}
+          chargeLimitMin={vehicleDetails.stateOfCharge.chargeLimitMin}
+        />
 
         <Card
           sx={{
@@ -302,169 +422,77 @@ export const VehicleDetailsPage = () => {
               fontSize={ui_vars.font_size.xs}
               lineHeight={'1.8rem'}
             >
-              {`${vehicleDetails.odometer}km`}
-            </Typography>
-          </Box>
-        </Card>
-
-        <Card
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: ui_vars.other.page_spacing,
-            width: '100%',
-            py: '2.4rem',
-          }}
-        >
-          {/* -------------------------- Battery percentage -------------------------- */}
-          <Typography
-            fontWeight={700}
-            fontSize={ui_vars.font_size.xxl}
-            lineHeight={'4.2rem'}
-            color={palette.secondary.main}
-          >
-            {`${vehicleDetails.stateOfCharge.stateOfCharge}%`}
-          </Typography>
-
-          {/* -------------------------- Battery -------------------------- */}
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1.5,
-            }}
-          >
-            <Card
-              sx={{
-                width: '9.5rem',
-                height: '7rem',
-                py: 3,
-              }}
-            >
-              <Box
-                sx={{
-                  width: '6.4rem',
-                  height: '4.5rem',
-                  '&::before': {
-                    content: '""',
-                    display: 'block',
-                    height: '100%',
-                    width: `${vehicleDetails.stateOfCharge.stateOfCharge}%`,
-                    background: palette.secondary.main,
-                    mask: `url("${BatteryMaskSvg}") left / 6.4rem 4.5rem no-repeat`,
-                  },
-                }}
-              ></Box>
-            </Card>
-            <Box
-              sx={{
-                width: '0.8rem',
-                height: '3.6rem',
-                background: palette.secondary.main,
-                borderRadius: '0.8rem',
-              }}
-            ></Box>
-          </Box>
-
-          {/* -------------------------- Battery Min/Max -------------------------- */}
-          <Box>
-            <Typography
-              fontWeight={500}
-              fontSize={ui_vars.font_size.xs}
-              lineHeight={'1.8rem'}
-              color={palette.secondary.main}
-              textTransform={'uppercase'}
-            >
-              <span
-                style={{ color: palette.text?.primary, marginRight: '5px' }}
-              >
-                {t('min')}
-              </span>
-              {`${vehicleDetails.stateOfCharge.chargeLimitMin}%`}
-            </Typography>
-
-            <Typography
-              fontWeight={500}
-              fontSize={ui_vars.font_size.xs}
-              lineHeight={'1.8rem'}
-              color={palette.secondary.main}
-              textTransform={'uppercase'}
-            >
-              <span
-                style={{ color: palette.text?.primary, marginRight: '5px' }}
-              >
-                {t('max')}
-              </span>
-              {`${vehicleDetails.stateOfCharge.chargeLimitMax}%`}
+              {isValueValid(vehicleDetails.odometer)
+                ? `${vehicleDetails.odometer}${t(`unit.km`)}`
+                : EMPTY_VALUE_PLACEHOLDER}
             </Typography>
           </Box>
         </Card>
 
         {/* -------------------------- Details cards -------------------------- */}
-        <VehicleDetailsPairCard
-          firstDetail={{
-            vehicleDetail: 'ESTIMATED_RANGE',
-            detailValue: vehicleDetails.stateOfCharge.estimatedRange,
+
+        <DoubleDetailCard
+          firstElement={{
+            icon: EstimatedRangeIcon,
+            label: t(`details.${VehicleDetail.ESTIMATED_RANGE}`),
+            value: vehicleDetails?.stateOfCharge?.estimatedRange,
+            unit: t(`unit.km`),
           }}
-          secondDetail={{
-            vehicleDetail: 'CHARGING_SPEED',
-            detailValue: vehicleDetails.stateOfCharge.chargeSpeed,
+          secondElement={{
+            icon: ChargingSpeedIcon,
+            label: t(`details.${VehicleDetail.CHARGING_SPEED}`),
+            value: vehicleDetails?.stateOfCharge?.chargeSpeed,
+            unit: t(`unit.kw`),
           }}
         />
 
-        <VehicleDetailsPairCard
-          firstDetail={{
-            vehicleDetail: 'CURRENT_TEMPERATURE',
-            detailValue: vehicleDetails.climateState.temperatureCurrent,
+        <DoubleDetailCard
+          firstElement={{
+            icon: CurrentTemperatureIcon,
+            label: t(`details.${VehicleDetail.CURRENT_TEMPERATURE}`),
+            value: vehicleDetails?.climateState?.temperatureCurrent,
+            unit: t(`unit.celsius`),
           }}
-          secondDetail={{
-            vehicleDetail: 'TARGET_TEMPERATURE',
-            detailValue: vehicleDetails.climateState.temperatureTarget,
+          secondElement={{
+            icon: TargetTemperatureIcon,
+            label: t(`details.${VehicleDetail.TARGET_TEMPERATURE}`),
+            value: vehicleDetails?.climateState?.temperatureTarget,
+            unit: t(`unit.celsius`),
           }}
         />
 
-        <VehicleDetailsPairCard
-          firstDetail={{
-            vehicleDetail: 'HEATING_COOLING',
-            detailValue: vehicleDetails.climateState.isClimateOn,
+        <DoubleDetailCard
+          firstElement={{
+            icon: HeatingCoolingIcon,
+            label: t(`details.${VehicleDetail.HEATING_COOLING}`),
+            value: t(
+              `detailsBoolean.${vehicleDetails.climateState.isClimateOn}Value`
+            ),
           }}
-          secondDetail={{
-            vehicleDetail: 'BATTERY_HEATER',
-            detailValue: vehicleDetails.climateState.isBatteryHeaterOn,
+          secondElement={{
+            icon: BatteryHeaterIcon,
+            label: t(`details.${VehicleDetail.BATTERY_HEATER}`),
+            value: t(
+              `detailsBoolean.${vehicleDetails.climateState.isBatteryHeaterOn}Value`
+            ),
           }}
         />
       </Box>
+      <FooterWrapper>
+        <DeleteButton
+          onClick={() => setIsDeleteModalOpen(true)}
+          title={t('deleteButton')}
+        />
+      </FooterWrapper>
 
-      {/* -------------------------- Snackbar -------------------------- */}
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={snackbarState.isOpen}
+      {/* -------------------------- Delete Modal -------------------------- */}
+
+      <DeleteVehicleDialog
+        open={isDeleteModalOpen}
         onClose={() => {
-          setSnackbarState({ ...snackbarState, isOpen: false });
+          setIsDeleteModalOpen(false);
         }}
-        autoHideDuration={6000}
-        action={
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={() => {
-              setSnackbarState({ ...snackbarState, isOpen: false });
-            }}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-        message={t(`detailsSnackbar.${snackbarState.status}`)}
-        sx={{
-          '& > div': {
-            backgroundColor: palette[snackbarState.status]?.main,
-            color: palette[snackbarState.status]?.contrastText,
-            fontSize: ui_vars.font_size.m,
-            fontWeight: 500,
-          },
-        }}
+        vehicleId={vehicleDetails?.vehicleDatabaseId || ''}
       />
     </>
   );

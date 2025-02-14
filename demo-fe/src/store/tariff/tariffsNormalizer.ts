@@ -6,10 +6,8 @@ export const tariffsNormalizer = (tariff: TariffDto): TariffModel => {
   return {
     tariffId: tariff.id ?? '',
     userId: tariff.userId ?? '',
-    locationId: tariff.locationId ?? '',
-    currency: tariff.currency ?? '',
-    country: tariff.countryCode ?? '',
-    last_updated: formatDateTime(tariff.lastUpdated) ?? '',
+    tariffName: tariff.name ?? '',
+    last_updated: tariff.lastUpdated ? formatDateTime(tariff.lastUpdated) : '',
     isOnline: tariff.isOnline ?? false,
     vendor: tariff.vendor,
   };

@@ -2,19 +2,16 @@ import { Typography, useTheme, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { HeighlightedSubtitle } from '../../shared/components/HeighlightedSubtitle';
 import { VendorButton } from './VendorButton';
-
-export type Vendor = {
-  name: string;
-  Icon: JSX.Element;
-};
+import { VendorWithIcon } from '../../shared/mappers/vendorToVendorWithIconMapper';
 
 interface SelectVendorListProps {
   title: string;
   subtitle: string;
-  availableVendors: Vendor[];
-  unavailableVendors: Vendor[];
+  availableVendors: VendorWithIcon[];
+  unavailableVendors: VendorWithIcon[];
   onClick: (T: string) => void;
   displayName?: boolean;
+  onRedirectStart: () => void;
 }
 
 export const SelectVendorList = ({
@@ -24,6 +21,7 @@ export const SelectVendorList = ({
   unavailableVendors,
   onClick,
   displayName,
+  onRedirectStart,
 }: SelectVendorListProps) => {
   const theme = useTheme();
   const [t] = useTranslation();
@@ -75,7 +73,10 @@ export const SelectVendorList = ({
               key={availableVendor.name}
               vendorName={availableVendor.name}
               startingIcon={availableVendor.Icon}
-              onClick={() => onClick(availableVendor.name)}
+              onClick={() => {
+                onClick(availableVendor.id);
+                onRedirectStart && onRedirectStart();
+              }}
               disabled={false}
               displayName={displayName}
             />
@@ -83,29 +84,33 @@ export const SelectVendorList = ({
         })}
       </Box>
 
-      <HeighlightedSubtitle subtitleText={t('comingSoon')} />
+      {unavailableVendors.length > 0 && (
+        <>
+          <HeighlightedSubtitle subtitleText={t('comingSoon')} />
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          rowGap: 6,
-        }}
-      >
-        {unavailableVendors.map((unavailableVendor) => {
-          return (
-            <VendorButton
-              key={unavailableVendor.name}
-              vendorName={unavailableVendor.name}
-              startingIcon={unavailableVendor.Icon}
-              onClick={() => {}}
-              disabled={true}
-              displayName={displayName}
-            />
-          );
-        })}
-      </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              rowGap: 6,
+            }}
+          >
+            {unavailableVendors.map((unavailableVendor) => {
+              return (
+                <VendorButton
+                  key={unavailableVendor.name}
+                  vendorName={unavailableVendor.name}
+                  startingIcon={unavailableVendor.Icon}
+                  onClick={() => {}}
+                  disabled={true}
+                  displayName={displayName}
+                />
+              );
+            })}
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

@@ -10,6 +10,7 @@ import {
   CustomTheme,
   createTheme,
   alpha,
+  darken,
 } from '@mui/material/styles';
 
 // ---------------------------------------- FONTS ---------------------------------------- //
@@ -73,6 +74,9 @@ const themeOptions: CustomThemeOptions = {
       white: WHITE,
       statuses: {
         CHARGING: SECONDARY,
+        DISCHARGING: '#91C3FD',
+        PRODUCING: SECONDARY,
+        IDLE: '#AA8FC1',
         FAULT: '#E80000',
         FINISHED: '#2AD87D',
         PLUGGED: '#FFC240',
@@ -145,6 +149,31 @@ const themeOptions: CustomThemeOptions = {
             WebkitMaskComposite: 'xor',
             maskComposite: 'exclude',
           },
+        },
+      },
+    },
+    MuiFab: {
+      styleOverrides: {
+        root: {
+          background: PAPER,
+          color: WHITE,
+
+          '&:hover': {
+            background: darken(PAPER, 0.15),
+          },
+        },
+        sizeSmall: {
+          minWidth: 30,
+          width: 30,
+          minHeight: 30,
+          height: 30,
+        },
+      },
+    },
+    MuiSnackbarContent: {
+      styleOverrides: {
+        root: {
+          flexWrap: 'nowrap',
         },
       },
     },

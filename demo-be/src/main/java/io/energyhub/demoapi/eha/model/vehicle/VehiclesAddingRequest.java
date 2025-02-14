@@ -13,11 +13,11 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Object for vehicle IDs request that should be added to the Energy Hub Alliance.")
+@Schema(description = "Object for vehicle IDs request that should be added to the Energy Hub.")
 public class VehiclesAddingRequest {
 
     @NotEmpty
-    @Schema(description = "List of IDs of vehicles from vendor system to be added to the Energy Hub Alliance.", example = "[\"8413731391660801\"]")
+    @Schema(description = "List of external IDs of vehicles to be linked to the Energy Hub.", example = "[\"8413731391660801\"]")
     private Set<String> externalVehicles;
 }
 

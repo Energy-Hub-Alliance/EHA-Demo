@@ -12,7 +12,7 @@ export const NavigationHeader = ({
     icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
     onClick: () => void;
   };
-  logo?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  logo?: JSX.Element;
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export const NavigationHeader = ({
         <BackArrowIcon />
       </IconButton>
 
-      {logo && LogoIcon && <LogoIcon />}
+      {logo && LogoIcon}
 
       {action && ActionIcon && (
         <IconButton onClick={action.onClick} size="small">

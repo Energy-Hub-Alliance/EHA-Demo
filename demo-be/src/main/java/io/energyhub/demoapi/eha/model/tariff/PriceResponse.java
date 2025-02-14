@@ -1,5 +1,6 @@
 package io.energyhub.demoapi.eha.model.tariff;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,13 +19,21 @@ public class PriceResponse {
 
     @NotNull
     @Schema(description = "The timestamp of the start of price interval.")
-    private LocalDateTime startsAt;
+    @JsonProperty(index = 4)
+    private LocalDateTime startDate;
 
     @NotNull
-    @Schema(description = "The total price of 1 kWh in currency of the tariff including taxes.", example = "0.22")
+    @Schema(description = "The total price consisting of energy purchasing costs and taxes and levies.", example = "0.72")
+    @JsonProperty(index = 1)
     private BigDecimal totalPrice;
 
     @NotNull
-    @Schema(description = "The taxes of the total price of the tariff.", example = "0.05")
-    private BigDecimal vat;
+    @Schema(description = "The day ahead spot price of the electricity purchased.", example = "0.52")
+    @JsonProperty(index = 2)
+    private BigDecimal energyPrice;
+
+    @NotNull
+    @Schema(description = "The taxes and levies of the purchased energy.", example = "0.22")
+    @JsonProperty(index = 3)
+    private BigDecimal taxAndLevies;
 }

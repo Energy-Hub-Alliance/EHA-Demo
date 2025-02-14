@@ -20,7 +20,7 @@
         <java.version>17</java.version>
         <spring-cloud.version>2023.0.0-RC1</spring-cloud.version>
         <lib.springdoc.version>2.2.0</lib.springdoc.version>
-        <lib.kafka>3.0.10</lib.kafka>
+        <lib.kafka>3.3.0</lib.kafka>
     </properties>
 
     <dependencies>

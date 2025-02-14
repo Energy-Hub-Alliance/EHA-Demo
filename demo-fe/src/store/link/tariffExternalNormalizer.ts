@@ -7,7 +7,7 @@ export const tariffExternalNormalizer = (
   return {
     externalId: tariffExternal.externalId ?? '',
     countryCode: tariffExternal.countryCode ?? '',
-    tariffName: tariffExternal.tariffName ?? '',
+    tariffName: tariffExternal.name ?? '',
     manufacturer: tariffExternal.vendor ?? '',
     linked: tariffExternal.isLinked ?? '',
   };

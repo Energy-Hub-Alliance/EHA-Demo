@@ -17,30 +17,24 @@
   "connectButton": "Connect",
   "requiredField": "This field is required",
   "upcomingFeatures": {
-    "HEMS": "HEMs",
-    "CHARGING_HARDWARE": "Charging Hardware",
-    "PHOTOVOLTAIC_INVERTER": "Photovoltaic Inverter",
-    "HEATING_AND_COOLING": "Heating And Cooling",
-    "SMART_ENERGY": "Smart Energy",
-    "STORAGE_PROVIDER": "Storage Provider"
+    "HEMS": "HEMS"
   },
   "comingSoon": "Coming soon",
   "vehiclesPageSubtitle": "Manage your vehicle data",
-  "vehicleManufakturers": {
-    "TESLA": "Tesla",
-    "MERCEDES": "Mercedes-Benz",
-    "BMW": "BMW",
-    "VOLKSWAGEN": "Volkswagen",
-    "AUDI": "Audi"
-  },
   "links": {
     "HOME": "Home",
     "VEHICLES": "Vehicles",
     "SMART_TARIFFS": "Smart Tariffs",
+    "HVACS": "HVACs",
     "CONTACT_US": "Contact us",
+    "HOME_POWER": "Solar inverters, battery storage &  meter",
+    "CHARGING_HARDWARE": "Charging hardware",
     "LOG_OUT": "Log out"
   },
   "statuses": {
+    "PRODUCING": "Producing",
+    "DISCHARGING": "Discharging",
+    "IDLE": "IDLE",
     "CHARGING": "Charging",
     "FAULT": "Fault",
     "FINISHED": "Finished",
@@ -54,6 +48,7 @@
   "successTitle": "Congratulations!",
   "successVehicleSubtitle": "Your vehicle is successfully added",
   "successTariffSubtitle": "Your smart tariff is successfully added",
+  "successHvacSubtitle": "Your HVAC device is successfully added",
   "unsuccessTitle": "Something went wrong",
   "unsuccessSubtitle": "There seemed to be a problem - try again",
   "continueMessage": "Continue",
@@ -112,10 +107,13 @@
     "RSD": "Serbian Dinar"
   },
   "unit": {
-    "vat": "(0.2VAT)",
+    "vat": "vat",
     "kwh": "kWh",
-    "cents": "cents",
-    "ct": "ct"
+    "w": "W",
+    "kw": "kW",
+    "a": "A",
+    "km": "km",
+    "celsius": "°C"
   },
   "period": {
     "TODAY": "Today",
@@ -385,6 +383,7 @@
     "VENDOR_CONNECTION_ERROR": "Connection cannot be established with Vendor API",
     "VENDOR_AUTHENTICATION_ERROR": "Authentication error with Vendor API",
     "VENDOR_COMMUNICATION_ERROR": "Communication error with Vendor API",
+    "VENDOR_ACCOUNT_IS_DISCONNECTED": "Vendor account is disconnected",
     "USER_LINK_NOT_FOUND": "User link not found",
     "REDIRECT_URL_NOT_MATCHING": "Provided redirect url does not match partner management redirect url",
     "HVAC_NOT_FOUND": "Hvac not found",
@@ -394,6 +393,143 @@
     "VEHICLE_NOT_FOUND": "Requested Vehicle not found",
     "VEHICLE_ALREADY_ADDED": "Requested Vehicle is already added",
     "VEHICLE_IMAGE_NOT_FOUND": "Vehicle image not found",
-    "VIN_NOT_FOUND": "VIN not found"
+    "VIN_NOT_FOUND": "VIN not found",
+    "DEVICE_LIMIT_REACHED": "Device limit reached",
+    "BATTERY_NOT_FOUND": "Battery not found",
+    "METER_NOT_FOUND": "Meter not found",
+    "PV_INVERTER_NOT_FOUND": "Solar Inverter not found",
+    "COMMAND_REQUEST_NOT_IMPLEMENTED": "Submitting command request is not implemented",
+    "COMMAND_TYPE_NOT_ALLOWED": "Command type for this vehicle is not allowed",
+    "VENDOR_RATE_LIMIT": "Vendor rate limit exceeded",
+    "GENERIC": "Something went wrong. Please try again"
+  },
+  "hvacSubtitle": "Have a holistic view of your heating & cooling energy consumption",
+  "hvacs": "Heating & Cooling (HVAC)",
+  "connectHvac": "Connect your HVAC device",
+  "noConnectedHvacs": "No HVAC devices connected yet",
+  "hvacsTitle": "Heating & Cooling (HVAC) devices",
+  "hvacManufacturersTitle": "Select your Vendor",
+  "hvacManufacturersSubtitle": "Connect to your Heating & Cooling (HVAC) device to view heating & cooling energy consumption",
+  "linkedHvacs": "All Heating & Cooling (HVAC) devices are already connected",
+  "selectHvacTitle": "Select Heating & Cooling (HVAC) device you want to connect with your Energy Hub Alliance account",
+  "connectHvacs": "Connect HVAC devices",
+  "hvacType": {
+    "AC": "Air Condition",
+    "HEATPUMP": "Heat pump",
+    "DHW": "Domestic Hot Water (DHW)",
+    "THERMOSTAT": "Thermostat"
+  },
+  "homePower": "Solar inverters, battery storage &  meter",
+  "homePowerSubtitle": "View solar, battery, or meter status and live data",
+  "noConnectedHomePower": "No solar inverter, battery storage or meter connected yet",
+  "connectHomePower": "Connect your device",
+  "successHomePowerSubtitle": "Your Home Power device is successfully added",
+  "homePowerType": {
+    "PV_INVERTER": "Solar Inverter",
+    "BATTERY": "Battery Storage",
+    "METER": "Meter"
+  },
+  "selectManufacturerTitle": "Select your manufacturer",
+  "homePowerManufacturersSubtitle": "Connect to your device to view solar, battery, or meter status and live data",
+  "batteryDetails": {
+    "BATTERY_POWER": "Battery power",
+    "BATTERY_CAPACITY": "Battery capacity",
+    "MAX_CHARGE_RATE": "Max charge rate",
+    "MAX_DISCHARGE_RATE": "Max discharge rate"
+  },
+  "homePowerDetailsSnackbar": {
+    "success": "Home power details are refreshed!"
+  },
+  "solarPower": "Solar power",
+  "vendor": "Vendor",
+  "model": "Model",
+  "hvacDetails": {
+    "TEMPERATURE_CURRENT": "Inside Temperature",
+    "TEMPERATURE_OUTSIDE": "Outside Temperature"
+  },
+  "location": "Location",
+  "room": "Room",
+  "mode": "Mode",
+  "hvacModes": {
+    "AUTO": "AUTO",
+    "COOL": "COOL",
+    "DRY": "DRY",
+    "HEAT": "HEAT",
+    "OFF": "OFF",
+    "REDUCED": "REDUCED"
+  },
+  "hvacDetailsDesiredTemperature": "Desired temperature",
+  "hvacDetailsSnackbar": {
+    "success": "HVAC details are refreshed!"
+  },
+  "noHvacs": "There aren't any HVACs connected to this account at the moment.",
+  "noChargers": "There aren't any chargers connected to this account at the moment.",
+  "schedules": "Schedules",
+  "days": {
+    "MONDAY": "Monday",
+    "TUESDAY": "Tuesday",
+    "WEDNESDAY": "Wednesday",
+    "THURSDAY": "Thursday",
+    "FRIDAY": "Friday",
+    "SATURDAY": "Saturday",
+    "SUNDAY": "Sunday"
+  },
+  "overlapMessage": "Wrong data recieved",
+  "selectHomePowerTitle": "Select the home power device you want to connect with your Energy Hub Alliance account",
+  "noHomePower": "There aren't any home power devices connected to this account at the moment.",
+  "linkedHomePower": "All home power devices are already connected",
+  "meterDetails": {
+    "POWER": "Power",
+    "METER_VALUE": "Meter Value"
+  },
+  "chargingHardwareSubtitle": "View charging hardware status and live data",
+  "chargingHardware": "Charging hardware",
+  "connectChargingHardware": "Connect your device",
+  "noConnectedChargingHardware": "No charging hardware connected yet",
+  "chargingHardwareManufacturersSubtitle": "Connect to view charging hardware data",
+  "selectChargingHardwareTitle": "Select device you want to connect with your Energy Hub Alliance account",
+  "successChargingHardwareSubtitle": "Your device is successfully connected",
+  "chargingHardwareDetailsSnackbar": {
+    "success": "Charging hardware details are refreshed!"
+  },
+  "activePhase": "Active Phase",
+  "chargerDetails": {
+    "CHARGE_POWER": "Charge Power",
+    "CHARGE_MAX_CURRENT": "Charge Max Current"
+  },
+  "phaseConnection": "phase connection",
+  "deleteButton": "Delete",
+  "cancelButton": "Cancel",
+  "deleteTitle": {
+    "charger": "Delete Charging hardware",
+    "vehicle": "Delete Vehicle",
+    "meter": "Delete Meter",
+    "pvInverter": "Delete PV Inverter",
+    "battery": "Delete home battery",
+    "tariff": "Delete Tariff",
+    "hvac": "Delete HVAC device"
+  },
+  "deleteContent": {
+    "charger": "Are you sure you want to delete this charging hardware?",
+    "vehicle": "Are you sure you want to delete this vehicle?",
+    "meter": "Are you sure you want to delete this meter?",
+    "pvInverter": "Are you sure you want to delete this PV Inverter?",
+    "battery": "Are you sure you want to delete this home battery?",
+    "tariff": "Are you sure you want to delete this tariff?",
+    "hvac": "Are you sure you want to delete this HVAC device?"
+  },
+  "deleteDeviceSuccessMessage": "Device successfully removed",
+  "deleteVehicleSuccessMessage": "Vehicle successfully removed",
+  "deleteTariffSuccessMessage": "Smart Tariff successfully removed",
+  "smartTariffDetailsSnackbarMessage": "Smart Tariff details are refreshed",
+  "chargingButton": {
+    "START": "Start charging",
+    "STOP": "Stop charging"
+  },
+  "chargingCommands": {
+    "startFailed": "Charging failed, please try again",
+    "startExecuted": "Charging has started successfully",
+    "stopFailed": "Failed to stop charging",
+    "stopExecuted": "Charging stopped successfully"
   }
 }

@@ -4,10 +4,8 @@ import io.energyhub.demoapi.config.EhaApiFeignConfig;
 import io.energyhub.demoapi.eha.model.SuccessMessageDto;
 import io.energyhub.demoapi.eha.model.VehicleResponse;
 import io.energyhub.demoapi.eha.model.pagination.PageResponse;
-import io.energyhub.demoapi.eha.model.sort.VehicleSortRequest;
-import io.energyhub.demoapi.eha.model.vehicle.VehicleLinkDto;
-import io.energyhub.demoapi.eha.model.vehicle.VehicleShortResponse;
-import io.energyhub.demoapi.eha.model.vehicle.VehiclesAddingRequest;
+import io.energyhub.demoapi.eha.model.sort.DeviceForUserSortRequest;
+import io.energyhub.demoapi.eha.model.vehicle.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
@@ -21,7 +19,7 @@ public interface EhaVehicleApiClient {
 
     @GetMapping("v1.0.0/users/{userId}/vehicles")
     PageResponse<VehicleShortResponse> getAllVehiclesByUserId(@PathVariable String userId,
-                                                              @SpringQueryMap VehicleSortRequest request);
+                                                              @SpringQueryMap DeviceForUserSortRequest request);
 
     @GetMapping("v1.0.0/users/{userId}/vehicles/{vehicleId}")
     VehicleResponse getVehiclesByUserIdAndVehicleId(@PathVariable String userId, @PathVariable(name = "vehicleId") UUID vehicleUuid);
@@ -34,16 +32,27 @@ public interface EhaVehicleApiClient {
 
     @GetMapping("v1.0.0/link/users/{userId}/vendor-accounts/{vendorAccountId}/vehicles")
     PageResponse<VehicleLinkDto> getConnectedFromVendorForVendorAccount(@PathVariable String userId,
-                                                                            @PathVariable(name = "vendorAccountId") UUID vendorAccountUuid,
-                                                                            @RequestParam Integer page,
-                                                                            @RequestParam Integer size);
+                                                                        @PathVariable(name = "vendorAccountId") UUID vendorAccountUuid,
+                                                                        @RequestParam Integer page,
+                                                                        @RequestParam Integer size);
 
     @PostMapping("v1.0.0/link/users/{userId}/vendor-accounts/{vendorAccountId}/vehicles")
     List<VehicleLinkDto> linkVehiclesFromEndUserVendorAccount(@RequestBody VehiclesAddingRequest vehiclesAddingRequest,
                                                               @PathVariable String userId,
                                                               @PathVariable(name = "vendorAccountId") UUID vendorAccountUuid);
 
-
     @GetMapping(value = "v1.0.0/users/{userId}/vehicles/{vehicleId}/image.png", produces = MediaType.IMAGE_PNG_VALUE)
     byte[] getVehicleImage(@PathVariable String userId, @PathVariable UUID vehicleId);
+
+    @PostMapping("v1.0.0/users/{userId}/vehicles/{vehicleId}/commands/charging-start")
+    SubmitCommandResponse chargingStart(@PathVariable String userId,
+                                               @PathVariable(name = "vehicleId") UUID vehicleUuid);
+
+    @PostMapping("v1.0.0/users/{userId}/vehicles/{vehicleId}/commands/charging-stop")
+    SubmitCommandResponse chargingStop(@PathVariable String userId,
+                                               @PathVariable(name = "vehicleId") UUID vehicleUuid);
+
+    @GetMapping("v1.0.0/users/{userId}/vehicles/{vehicleId}/commands")
+    List<SubmitCommandResponse> getPendingVehicleCommands(@PathVariable String userId,
+                                                          @PathVariable(name = "vehicleId") UUID vehicleUuid);
 }
