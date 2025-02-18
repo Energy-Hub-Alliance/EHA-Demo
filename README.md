@@ -16,7 +16,7 @@ This is true example of partner integration providing all features at glance.
 ## Community
 * In order to be contact us go [HERE](https://www.energy-hub.io/contact-us/)
 * Find more documentation on [Developer portal](https://developer.energy-hub.io/documentation/introduction)
-* ![Linkedin](https://de.linkedin.com/company/energy-hub-alliance) follow and interact with us
+* [Linkedin](https://de.linkedin.com/company/energy-hub-alliance) follow and interact with us
 
 ## Project Overview
 
